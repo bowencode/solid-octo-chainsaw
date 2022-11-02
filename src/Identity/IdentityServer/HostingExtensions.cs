@@ -1,7 +1,8 @@
 using Duende.IdentityServer;
-using IdentityServer;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+using IdentityServer.Configuration;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Serilog;
+using System.Net;
 
 namespace IdentityServer;
 
@@ -41,7 +42,6 @@ internal static class HostingExtensions
         //builder.Services.Configure<RazorPagesOptions>(options =>
         //    options.Conventions.AuthorizeFolder("/ServerSideSessions", "admin"));
 
-
         builder.Services.AddAuthentication()
             .AddGoogle(options =>
             {
@@ -52,6 +52,32 @@ internal static class HostingExtensions
                 // set the redirect URI to https://localhost:5001/signin-google
                 options.ClientId = "copy client ID from Google here";
                 options.ClientSecret = "copy client secret from Google here";
+            })
+            .AddOpenIdConnect("aad", "Azure Active Directory", options =>
+            {
+                var aad = builder.Configuration.GetSection("AAD").Get<AadOptions>();
+
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.ClientId = aad.ClientId;
+                options.Authority = $"https://login.microsoftonline.com/{aad.TenantId}";
+                options.RequireHttpsMetadata = true;
+                options.ClientSecret = aad.ClientSecret;
+                options.CallbackPath = "/signin-oidc";
+
+                options.Events.OnRemoteFailure = context =>
+                {
+                    context.HandleResponse();
+
+                    if (context.Failure is OpenIdConnectProtocolException && context.Failure.Message.Contains("access_denied"))
+                    {
+                        context.Response.Redirect("/");
+                    }
+                    else
+                    {
+                        context.Response.Redirect("/Home/Error?message=" + WebUtility.UrlEncode(context.Failure?.Message));
+                    }
+                    return Task.CompletedTask;
+                };
             });
 
         return builder.Build();
