@@ -1,4 +1,5 @@
-﻿using Duende.IdentityServer.Models;
+﻿using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
 
 namespace IdentityServer;
 
@@ -9,6 +10,8 @@ public static class Config
         {
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
+            new IdentityResources.Email(),
+            new IdentityResources.Address(),
         };
 
     public static IEnumerable<ApiScope> ApiScopes =>
@@ -46,7 +49,43 @@ public static class Config
                 PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
 
                 AllowOfflineAccess = true,
-                AllowedScopes = { "openid", "profile", "scope2" }
+                AllowedScopes =
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    "scope2"
+                }
             },
+
+            // interactive client for server-side application
+            new Client
+            {
+                ClientId = "web-ui",
+                ClientSecrets = { new Secret("1f668bf6-5ef5-4e77-ae84-28614dfc9d2d".Sha256()) },
+
+                AllowedGrantTypes = GrantTypes.Code,
+            
+                // where to redirect to after login
+                RedirectUris =
+                {
+                    "https://localhost:7163/signin-oidc",
+                    "http://localhost:5163/signin-oidc",
+                },
+
+                // where to redirect to after logout
+                PostLogoutRedirectUris =
+                {
+                    "https://localhost:7163/signout-callback-oidc",
+                    "http://localhost:5163/signout-callback-oidc",
+                },
+
+                AllowedScopes = new List<string>
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email,
+                }
+            }
+
         };
 }

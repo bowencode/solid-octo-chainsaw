@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Notes.Web.Host", "Demo.Notes.Web.Host\Demo.Notes.Web.Host.csproj", "{13392146-D118-4BEB-80E4-C2EC43995082}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Notes.Web.Host", "Demo.Notes.Web.Host\Demo.Notes.Web.Host.csproj", "{13392146-D118-4BEB-80E4-C2EC43995082}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Notes.Web.Api.Host", "Demo.Notes.Web.Api.Host\Demo.Notes.Web.Api.Host.csproj", "{557C07C9-7CCD-4BB4-BE3A-EBB546D0603D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Notes.Web.Api.Host", "Demo.Notes.Web.Api.Host\Demo.Notes.Web.Api.Host.csproj", "{557C07C9-7CCD-4BB4-BE3A-EBB546D0603D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Notes.Web.Blazor.Server", "Demo.Notes.Web.Blazor\Server\Demo.Notes.Web.Blazor.Server.csproj", "{36E02640-ED89-49AB-B503-38490475A494}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Notes.Web.Blazor.Server", "Demo.Notes.Web.Blazor\Server\Demo.Notes.Web.Blazor.Server.csproj", "{36E02640-ED89-49AB-B503-38490475A494}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Notes.Web.Blazor.Client", "Demo.Notes.Web.Blazor\Client\Demo.Notes.Web.Blazor.Client.csproj", "{F1C10193-6DCB-46DD-8441-9DBFE4DE32AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Notes.Web.Blazor.Client", "Demo.Notes.Web.Blazor\Client\Demo.Notes.Web.Blazor.Client.csproj", "{F1C10193-6DCB-46DD-8441-9DBFE4DE32AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Notes.Web.Blazor.Shared", "Demo.Notes.Web.Blazor\Shared\Demo.Notes.Web.Blazor.Shared.csproj", "{02D4B742-F7C8-4B5E-A228-559DC17DA810}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Notes.Web.Blazor.Shared", "Demo.Notes.Web.Blazor\Shared\Demo.Notes.Web.Blazor.Shared.csproj", "{02D4B742-F7C8-4B5E-A228-559DC17DA810}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blazor", "Blazor", "{EEADE87A-901B-4B27-87DE-0A583733575E}"
 EndProject
