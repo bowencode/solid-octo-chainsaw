@@ -2,11 +2,10 @@
 // See LICENSE in the project root for license information.
 
 
-using IdentityModel;
-using System.Security.Claims;
-using System.Text.Json;
-using Duende.IdentityServer;
 using Duende.IdentityServer.Test;
+using System.Text.Json;
+using System.Reflection;
+using Duende.IdentityServer.Stores.Serialization;
 
 namespace IdentityServer;
 
@@ -16,49 +15,17 @@ public class TestUsers
     {
         get
         {
-            var address = new
+            string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string dataFilePath = Path.Combine(binDirectory, "TestUsers.json");
+            string json = File.ReadAllText(dataFilePath);
+            List<TestUser> testUsers = JsonSerializer.Deserialize<List<TestUser>>(json, new JsonSerializerOptions
             {
-                street_address = "One Hacker Way",
-                locality = "Heidelberg",
-                postal_code = 69118,
-                country = "Germany"
-            };
-                
-            return new List<TestUser>
-            {
-                new TestUser
+                Converters =
                 {
-                    SubjectId = "1",
-                    Username = "alice",
-                    Password = "alice",
-                    Claims =
-                    {
-                        new Claim(JwtClaimTypes.Name, "Alice Smith"),
-                        new Claim(JwtClaimTypes.GivenName, "Alice"),
-                        new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                        new Claim(JwtClaimTypes.Email, "AliceSmith@email.com"),
-                        new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-                        new Claim(JwtClaimTypes.WebSite, "http://alice.com"),
-                        new Claim(JwtClaimTypes.Address, JsonSerializer.Serialize(address), IdentityServerConstants.ClaimValueTypes.Json)
-                    }
-                },
-                new TestUser
-                {
-                    SubjectId = "2",
-                    Username = "bob",
-                    Password = "bob",
-                    Claims =
-                    {
-                        new Claim(JwtClaimTypes.Name, "Bob Smith"),
-                        new Claim(JwtClaimTypes.GivenName, "Bob"),
-                        new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                        new Claim(JwtClaimTypes.Email, "BobSmith@email.com"),
-                        new Claim(JwtClaimTypes.EmailVerified, "true", ClaimValueTypes.Boolean),
-                        new Claim(JwtClaimTypes.WebSite, "http://bob.com"),
-                        new Claim(JwtClaimTypes.Address, JsonSerializer.Serialize(address), IdentityServerConstants.ClaimValueTypes.Json)
-                    }
+                    new ClaimConverter()
                 }
-            };
+            });
+            return testUsers;
         }
     }
 }

@@ -1,0 +1,118 @@
+[
+    {
+      "SubjectId": "1",
+      "Username": "alice",
+      "Password": "alice",
+      "IsActive": true,
+      "Claims": [
+        {
+          "Type": "name",
+          "Value": "Alice Smith"
+        },
+        {
+          "Type": "given_name",
+          "Value": "Alice"
+        },
+        {
+          "Type": "family_name",
+          "Value": "Smith"
+        },
+        {
+          "Type": "email",
+          "Value": "AliceSmith@email.com"
+        },
+        {
+          "Type": "email_verified",
+          "Value": "true",
+          "ValueType": "http://www.w3.org/2001/XMLSchema#boolean"
+        },
+        {
+          "Type": "website",
+          "Value": "http://alice.com"
+        },
+        {
+          "Type": "address",
+          "Value": "{\"street_address\":\"One Hacker Way\",\"locality\":\"Heidelberg\",\"postal_code\":69118,\"country\":\"Germany\"}",
+          "ValueType": "json"
+        }
+      ]
+    },
+    {
+      "SubjectId": "2",
+      "Username": "bob",
+      "Password": "bob",
+      "IsActive": true,
+      "Claims": [
+        {
+          "Type": "name",
+          "Value": "Bob Smith"
+        },
+        {
+          "Type": "given_name",
+          "Value": "Bob"
+        },
+        {
+          "Type": "family_name",
+          "Value": "Smith"
+        },
+        {
+          "Type": "email",
+          "Value": "BobSmith@email.com"
+        },
+        {
+          "Type": "email_verified",
+          "Value": "true",
+          "ValueType": "http://www.w3.org/2001/XMLSchema#boolean"
+        },
+        {
+          "Type": "website",
+          "Value": "http://bob.com"
+        },
+        {
+          "Type": "address",
+          "Value": "{\"street_address\":\"One Hacker Way\",\"locality\":\"Heidelberg\",\"postal_code\":69118,\"country\":\"Germany\"}",
+          "ValueType": "json"
+        }
+      ]
+    },
+    {
+      "SubjectId": "3",
+      "Username": "test",
+      "Password": "N/A",
+      "ProviderName": "aad",
+      "ProviderSubjectId": "GUID",
+      "IsActive": true,
+      "Claims": [
+        {
+          "Type": "name",
+          "Value": "Alice Smith"
+        },
+        {
+          "Type": "given_name",
+          "Value": "Alice"
+        },
+        {
+          "Type": "family_name",
+          "Value": "Smith"
+        },
+        {
+          "Type": "email",
+          "Value": "AliceSmith@email.com"
+        },
+        {
+          "Type": "email_verified",
+          "Value": "true",
+          "ValueType": "http://www.w3.org/2001/XMLSchema#boolean"
+        },
+        {
+          "Type": "website",
+          "Value": "http://alice.com"
+        },
+        {
+          "Type": "address",
+          "Value": "{\"street_address\":\"One Hacker Way\",\"locality\":\"Heidelberg\",\"postal_code\":69118,\"country\":\"Germany\"}",
+          "ValueType": "json"
+        }
+      ]
+    }
+  ]

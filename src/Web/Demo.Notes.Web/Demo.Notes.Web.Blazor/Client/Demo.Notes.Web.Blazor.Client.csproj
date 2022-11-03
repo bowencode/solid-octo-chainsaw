@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Common\Demo.Notes.Common\Demo.Notes.Common.csproj" />
     <ProjectReference Include="..\Shared\Demo.Notes.Web.Blazor.Shared.csproj" />
   </ItemGroup>
 

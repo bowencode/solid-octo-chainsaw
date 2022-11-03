@@ -1,4 +1,4 @@
-namespace Demo.Notes.Web.Api.Host
+namespace Demo.Notes.Web.AdminApi.Host
 {
     public class WeatherForecast
     {

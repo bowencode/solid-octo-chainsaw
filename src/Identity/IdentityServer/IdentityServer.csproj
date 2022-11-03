@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\..\..\data\TestUsers.json" Link="TestUsers.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Duende.IdentityServer" Version="6.1.0" />
     
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.0" />
