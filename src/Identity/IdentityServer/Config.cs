@@ -19,6 +19,7 @@ public static class Config
         {
             new ApiScope("scope1"),
             new ApiScope("scope2"),
+            new ApiScope("myApi"),
         };
 
     public static IEnumerable<Client> Clients =>
@@ -64,7 +65,7 @@ public static class Config
                 ClientSecrets = { new Secret("1f668bf6-5ef5-4e77-ae84-28614dfc9d2d".Sha256()) },
 
                 AllowedGrantTypes = GrantTypes.Code,
-            
+
                 // where to redirect to after login
                 RedirectUris =
                 {
@@ -84,6 +85,41 @@ public static class Config
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Email,
+                }
+            },
+
+            // interactive client for web client admin application
+            new Client
+            {
+                ClientId = "web-admin-ui",
+                ClientSecrets = { new Secret("71d2e259-a6ef-4f7e-af25-ae6f2c8ba54f".Sha256()) },
+
+                AllowedGrantTypes = GrantTypes.Code,
+                EnableLocalLogin = false,
+                IdentityProviderRestrictions = { "aad" },
+                AllowOfflineAccess = true,
+
+                // where to redirect to after login
+                RedirectUris =
+                {
+                    "https://localhost:7044/signin-oidc",
+                    "http://localhost:5044/signin-oidc",
+                },
+
+                // where to redirect to after logout
+                PostLogoutRedirectUris =
+                {
+                    "https://localhost:7044/signout-callback-oidc",
+                    "http://localhost:5044/signout-callback-oidc",
+                },
+
+                AllowedScopes = new List<string>
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email,
+                    IdentityServerConstants.StandardScopes.OfflineAccess,
+                    "myApi",
                 }
             }
 

@@ -13,6 +13,8 @@ namespace Demo.Notes.Web.Blazor
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
+            AddIdentityAuthentication(builder);
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -34,6 +36,11 @@ namespace Demo.Notes.Web.Blazor
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseBff();
+            app.UseAuthorization();
+
+            app.MapBffManagementEndpoints();
 
             app.MapRazorPages();
             app.MapControllers();
@@ -41,5 +48,52 @@ namespace Demo.Notes.Web.Blazor
 
             app.Run();
         }
+
+        private static void AddIdentityAuthentication(WebApplicationBuilder builder)
+        {
+            var identityOptions = builder.Configuration.GetSection("Identity").Get<IdentityOptions>();
+
+            builder.Services.AddBff();
+
+            builder.Services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = "cookie";
+                    options.DefaultChallengeScheme = "oidc";
+                    options.DefaultSignOutScheme = "oidc";
+                })
+                .AddCookie("cookie", options =>
+                {
+                    options.Cookie.Name = "__Host-blazor";
+                    options.Cookie.SameSite = SameSiteMode.Strict;
+                })
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.Authority = identityOptions.Authority;
+
+                    options.ClientId = identityOptions.ClientId;
+                    options.ClientSecret = identityOptions.ClientSecret;
+                    options.ResponseType = "code";
+                    options.ResponseMode = "query";
+
+                    options.Scope.Clear();
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    //options.Scope.Add("api");
+                    options.Scope.Add("myApi");
+                    options.Scope.Add("offline_access");
+
+                    options.MapInboundClaims = false;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+                    options.SaveTokens = true;
+                });
+        }
+    }
+
+    public class IdentityOptions
+    {
+        public string Authority { get; set; } = null!;
+        public string ClientId { get; set; } = null!;
+        public string ClientSecret { get; set; } = null!;
+        
     }
 }
