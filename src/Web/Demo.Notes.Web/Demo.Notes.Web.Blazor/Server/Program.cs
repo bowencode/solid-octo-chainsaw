@@ -1,3 +1,4 @@
+using Demo.Notes.Common.Configuration;
 using Microsoft.AspNetCore.ResponseCompression;
 
 namespace Demo.Notes.Web.Blazor
@@ -51,7 +52,7 @@ namespace Demo.Notes.Web.Blazor
 
         private static void AddIdentityAuthentication(WebApplicationBuilder builder)
         {
-            var identityOptions = builder.Configuration.GetSection("Identity").Get<IdentityOptions>();
+            var identityOptions = builder.Configuration.GetSection("Identity").Get<IdentityServerOptions>();
 
             builder.Services.AddBff();
 
@@ -87,13 +88,5 @@ namespace Demo.Notes.Web.Blazor
                     options.SaveTokens = true;
                 });
         }
-    }
-
-    public class IdentityOptions
-    {
-        public string Authority { get; set; } = null!;
-        public string ClientId { get; set; } = null!;
-        public string ClientSecret { get; set; } = null!;
-        
     }
 }

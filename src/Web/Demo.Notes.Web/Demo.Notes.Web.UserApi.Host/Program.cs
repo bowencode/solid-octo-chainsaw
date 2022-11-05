@@ -1,3 +1,6 @@
+using Demo.Notes.Common.Configuration;
+using IdentityModel.Client;
+
 namespace Demo.Notes.Web.UserApi.Host
 {
     public class Program
@@ -7,6 +10,7 @@ namespace Demo.Notes.Web.UserApi.Host
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            AddAuthenticatedApiAccess(builder.Services, builder.Configuration);
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -30,6 +34,28 @@ namespace Demo.Notes.Web.UserApi.Host
             app.MapControllers();
 
             app.Run();
+        }
+
+        private static void AddAuthenticatedApiAccess(IServiceCollection services, IConfiguration configuration)
+        {
+            var apiOptions = configuration.GetSection("AdminApi").Get<AdminApiOptions>();
+            var identityOptions = configuration.GetSection("Identity").Get<IdentityServerOptions>();
+
+            services.AddAccessTokenManagement(options =>
+            {
+                options.Client.Clients.Add("client", new ClientCredentialsTokenRequest
+                {
+                    Address = $"{identityOptions.Authority.TrimEnd('/')}/connect/token",
+                    ClientId = identityOptions.ClientId,
+                    ClientSecret = identityOptions.ClientSecret,
+                    Scope = "api"
+                });
+            });
+
+            services.AddClientAccessTokenHttpClient("adminApiClient", configureClient: client =>
+            {
+                client.BaseAddress = new Uri(apiOptions.Host);
+            });
         }
     }
 }

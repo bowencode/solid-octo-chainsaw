@@ -32,4 +32,10 @@ public static class CommonExtensions
 
         return "Unknown";
     }
+
+    public static string GetUserId(this ClaimsPrincipal claimsPrincipal)
+    {
+        var currentUserId = claimsPrincipal.FindFirst("sub")?.Value;
+        return currentUserId;
+    }
 }

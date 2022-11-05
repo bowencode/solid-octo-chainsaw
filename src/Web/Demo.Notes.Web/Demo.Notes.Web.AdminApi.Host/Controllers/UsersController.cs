@@ -1,7 +1,6 @@
+using Demo.Notes.Common.Extensions;
 using Demo.Notes.Web.AdminApi.Host.Model;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
-using System.Text.Json;
 using Demo.Notes.Common.Model;
 
 namespace Demo.Notes.Web.AdminApi.Host.Controllers
@@ -20,11 +19,10 @@ namespace Demo.Notes.Web.AdminApi.Host.Controllers
         [HttpGet(Name = "GetUsers")]
         public IEnumerable<UserData> Get()
         {
-            string binDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string dataFilePath = Path.Combine(binDirectory, "TestUsers.json");
-            string json = System.IO.File.ReadAllText(dataFilePath);
-            var testUsers = JsonSerializer.Deserialize<List<AppUser>>(json);
-            return testUsers.Select(u => new UserData
+            var currentUserId = User.GetUserId();
+            _logger.LogInformation("User {userId} accessing complete user list", currentUserId);
+
+            return TestUsers.Users.Select(u => new UserData
             {
                 Id = u.SubjectId,
                 Username = u.Username,
