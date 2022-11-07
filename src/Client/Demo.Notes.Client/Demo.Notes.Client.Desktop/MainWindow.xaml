@@ -5,8 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Demo.Notes.Client.Desktop"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="450" Width="800"
+        x:Name="WindowRoot"
+        Loaded="WindowRoot_Loaded">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
 
-    </Grid>
+    <StackPanel DataContext="{Binding ElementName=WindowRoot, Path=ViewModel}">
+        <Border BorderBrush="DimGray" BorderThickness="0,0,0,1">
+            <DockPanel LastChildFill="False">
+                <TextBlock DockPanel.Dock="Right" Margin="5" Visibility="{Binding Path=IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Run>Logged in as:</Run>
+                    <Run Text="{Binding User.Identity.Name, Mode=OneWay}"/>
+                </TextBlock>
+            </DockPanel>
+        </Border>
+        <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" TextWrapping="Wrap"/>
+
+        <ItemsControl>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
 </Window>

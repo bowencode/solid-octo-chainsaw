@@ -7,4 +7,9 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="IdentityModel.OidcClient" Version="5.1.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1418.22" />
+  </ItemGroup>
+
 </Project>

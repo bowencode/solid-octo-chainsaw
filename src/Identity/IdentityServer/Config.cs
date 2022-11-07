@@ -20,6 +20,11 @@ public static class Config
             new ApiScope("scope1"),
             new ApiScope("scope2"),
             new ApiScope("myApi"),
+            new ApiScope("read:users"),
+            new ApiScope("read:user-details"),
+            new ApiScope("read:notes"),
+            new ApiScope("write:notes"),
+            new ApiScope("list:notes"),
         };
 
     public static IEnumerable<Client> Clients =>
@@ -120,6 +125,40 @@ public static class Config
                     IdentityServerConstants.StandardScopes.Email,
                     IdentityServerConstants.StandardScopes.OfflineAccess,
                     "myApi",
+                }
+            },
+
+            
+            // interactive client for desktop client admin application
+            new Client
+            {
+                ClientId = "desktop-admin-ui",
+                ClientSecrets = { new Secret("1cf6de3f-0b06-4457-a114-3a7c00658878".Sha256()) },
+
+                AllowedGrantTypes = GrantTypes.Code,
+                EnableLocalLogin = false,
+                IdentityProviderRestrictions = { "aad" },
+                AllowOfflineAccess = true,
+
+                // where to redirect to after login
+                RedirectUris =
+                {
+                    "http://127.0.0.1/wpf-notes-admin-app",
+                },
+
+                // where to redirect to after logout
+                PostLogoutRedirectUris =
+                {
+                    "http://127.0.0.1/wpf-notes-admin-app/signout-callback-oidc",
+                },
+
+                AllowedScopes = new List<string>
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email,
+                    IdentityServerConstants.StandardScopes.OfflineAccess,
+                    "read:user-details",
                 }
             }
 
