@@ -94,5 +94,13 @@ namespace Demo.Notes.Client.Desktop
                 }
             }
         }
+
+        public void ResetData()
+        {
+            ErrorMessage = null;
+            User = null;
+            Tokens = null;
+            AllUsers.Clear();
+        }
     }
 }

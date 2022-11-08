@@ -18,11 +18,28 @@ namespace Demo.Notes.Client.Desktop
     {
         private const string ClientSecret = "1cf6de3f-0b06-4457-a114-3a7c00658878";
         private static readonly byte[] EntropyData = Encoding.UTF8.GetBytes(ClientSecret);
+        private readonly OidcClient _oidcClient;
 
         public MainViewModel ViewModel { get; } = new MainViewModel();
 
         public MainWindow()
         {
+            var options = new OidcClientOptions
+            {
+                Authority = "https://localhost:5001",
+                ClientId = "desktop-admin-ui",
+                ClientSecret = ClientSecret,
+                Scope = "openid profile email offline_access read:user-details",
+                RedirectUri = "http://127.0.0.1/wpf-notes-admin-app",
+                Browser = new WpfEmbeddedBrowser(),
+                Policy = new Policy
+                {
+                    RequireIdentityTokenSignature = false,
+                }
+            };
+
+            _oidcClient = new OidcClient(options);
+
             InitializeComponent();
         }
 
@@ -54,34 +71,27 @@ namespace Demo.Notes.Client.Desktop
             }
         }
 
+        private static void ClearUserData()
+        {
+            try
+            {
+                File.Delete(UserDataFilePath);
+            }
+            catch { }
+        }
+
         private static string UserDataFilePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "NotesAdmin\\userData.dat");
 
         private async void WindowRoot_Loaded(object sender, RoutedEventArgs e)
         {
-            var options = new OidcClientOptions
-            {
-                Authority = "https://localhost:5001",
-                ClientId = "desktop-admin-ui",
-                ClientSecret = ClientSecret,
-                Scope = "openid profile email offline_access read:user-details",
-                RedirectUri = "http://127.0.0.1/wpf-notes-admin-app",
-                Browser = new WpfEmbeddedBrowser(),
-                Policy = new Policy
-                {
-                    RequireIdentityTokenSignature = false,
-                }
-            };
-
-            var oidcClient = new OidcClient(options);
-
             var savedLogin = await LoadUserData();
             if (savedLogin?.RefreshToken != null)
             {
-                var refreshTokenResult = await oidcClient.RefreshTokenAsync(savedLogin.RefreshToken);
+                var refreshTokenResult = await _oidcClient.RefreshTokenAsync(savedLogin.RefreshToken);
 
                 if (!refreshTokenResult.IsError)
                 {
-                    await SetRefreshUser(oidcClient, refreshTokenResult);
+                    await SetRefreshUser(_oidcClient, refreshTokenResult);
 
                     await ViewModel.LoadData();
 
@@ -89,10 +99,15 @@ namespace Demo.Notes.Client.Desktop
                 }
             }
 
+            await LogIn();
+        }
+
+        private async Task LogIn()
+        {
             LoginResult loginResult;
             try
             {
-                loginResult = await oidcClient.LoginAsync();
+                loginResult = await _oidcClient.LoginAsync();
             }
             catch (Exception exception)
             {
@@ -146,6 +161,21 @@ namespace Demo.Notes.Client.Desktop
             ViewModel.ErrorMessage = null;
             var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(userInfoResult.Claims, "idp", "name", null));
             ViewModel.User = claimsPrincipal;
+        }
+
+        private async void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            var result = await _oidcClient.LogoutAsync();
+            if (!result.IsError)
+            {
+                ClearUserData();
+                ViewModel.ResetData();
+                await LogIn();
+            }
+            else
+            {
+                ViewModel.ErrorMessage = result.ErrorDescription;
+            }
         }
     }
 }

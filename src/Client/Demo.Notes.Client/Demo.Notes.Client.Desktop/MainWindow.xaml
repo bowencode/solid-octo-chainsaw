@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Demo.Notes.Client.Desktop"
         xmlns:common="clr-namespace:Demo.Notes.Common.Model;assembly=Demo.Notes.Common"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="Notes Admin" Height="450" Width="800"
         x:Name="WindowRoot"
         Loaded="WindowRoot_Loaded">
     <Window.Resources>
@@ -16,6 +16,7 @@
     <DockPanel DataContext="{Binding ElementName=WindowRoot, Path=ViewModel}" Grid.IsSharedSizeScope="True">
         <Border BorderBrush="DimGray" BorderThickness="0,0,0,1" DockPanel.Dock="Top">
             <DockPanel LastChildFill="False">
+                <Button DockPanel.Dock="Bottom" HorizontalAlignment="Right" Click="Logout_Click" Visibility="{Binding Path=IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}">Log out</Button>
                 <TextBlock DockPanel.Dock="Right" Margin="5" Visibility="{Binding Path=IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Run>Logged in as:</Run>
                     <Run Text="{Binding User.Identity.Name, Mode=OneWay}"/>
