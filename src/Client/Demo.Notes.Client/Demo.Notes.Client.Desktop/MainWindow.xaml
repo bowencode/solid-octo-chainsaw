@@ -13,7 +13,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
 
-    <DockPanel DataContext="{Binding ElementName=WindowRoot, Path=ViewModel}">
+    <DockPanel DataContext="{Binding ElementName=WindowRoot, Path=ViewModel}" Grid.IsSharedSizeScope="True">
         <Border BorderBrush="DimGray" BorderThickness="0,0,0,1" DockPanel.Dock="Top">
             <DockPanel LastChildFill="False">
                 <TextBlock DockPanel.Dock="Right" Margin="5" Visibility="{Binding Path=IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -24,8 +24,27 @@
         </Border>
         <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" TextWrapping="Wrap" DockPanel.Dock="Top"/>
 
+        <Grid TextBlock.FontSize="18" DockPanel.Dock="Top" Margin="10,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MaxWidth="200" SharedSizeGroup="id"/>
+                <ColumnDefinition Width="Auto" MaxWidth="200" SharedSizeGroup="username"/>
+                <ColumnDefinition Width="Auto" MaxWidth="300" SharedSizeGroup="name"/>
+                <ColumnDefinition Width="*" SharedSizeGroup="email"/>
+                <ColumnDefinition Width="Auto" MaxWidth="100" SharedSizeGroup="active"/>
+                <ColumnDefinition Width="Auto" MaxWidth="100" SharedSizeGroup="count"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Id" VerticalAlignment="Center" Margin="10,0"/>
+            <TextBlock Grid.Column="1" Text="Username" VerticalAlignment="Center" Margin="10,0"/>
+            <TextBlock Grid.Column="2" Text="Name" VerticalAlignment="Center" Margin="10,0"/>
+            <TextBlock Grid.Column="3" Text="Email" VerticalAlignment="Center" Margin="10,0"/>
+            <TextBlock Grid.Column="4" Text="Active" VerticalAlignment="Center" Margin="10,0"/>
+            <TextBlock Grid.Column="5" Text="Notes" VerticalAlignment="Center" Margin="10,0"/>
+        </Grid>
+
+        <Border BorderBrush="Gray" BorderThickness="0,0,0,1" DockPanel.Dock="Top"/>
+
         <ScrollViewer VerticalScrollBarVisibility="Auto" DockPanel.Dock="Top">
-            <ItemsControl ItemsSource="{Binding AllUsers}" Grid.IsSharedSizeScope="True">
+            <ItemsControl ItemsSource="{Binding AllUsers}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type local:ExtendedUserData}">
                         <Border BorderBrush="LightGray" BorderThickness="0,0,0,1" Padding="10,5">

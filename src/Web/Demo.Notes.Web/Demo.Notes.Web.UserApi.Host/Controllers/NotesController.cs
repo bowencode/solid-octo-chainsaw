@@ -27,7 +27,7 @@ namespace Demo.Notes.Web.AdminApi.Host.Controllers
             var container = await GetNotesContainerAsync();
 
             var allNotes = container
-                .GetItemLinqQueryable<NoteData>()
+                .GetItemLinqQueryable<NoteData>(allowSynchronousQueryExecution: true)
                 .ToList();
 
             return Ok(allNotes);
@@ -38,7 +38,7 @@ namespace Demo.Notes.Web.AdminApi.Host.Controllers
         {
             var container = await GetNotesContainerAsync();
 
-            var allNotes = container.GetItemLinqQueryable<NoteData>()
+            var allNotes = container.GetItemLinqQueryable<NoteData>(allowSynchronousQueryExecution: true)
                 .Where(n => n.UserId == userId)
                 .ToList();
             return Ok(allNotes);

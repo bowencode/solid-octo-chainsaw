@@ -12,6 +12,8 @@ namespace Demo.Notes.Web.UserApi.Host
             // Add services to the container.
             AddAuthenticatedApiAccess(builder.Services, builder.Configuration);
 
+            builder.Services.Configure<CosmosOptions>(builder.Configuration.GetSection("Cosmos"));
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
