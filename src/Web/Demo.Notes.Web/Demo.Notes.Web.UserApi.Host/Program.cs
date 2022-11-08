@@ -39,16 +39,15 @@ namespace Demo.Notes.Web.UserApi.Host
         private static void AddAuthenticatedApiAccess(IServiceCollection services, IConfiguration configuration)
         {
             var apiOptions = configuration.GetSection("AdminApi").Get<AdminApiOptions>();
-            var identityOptions = configuration.GetSection("Identity").Get<IdentityServerOptions>();
 
             services.AddAccessTokenManagement(options =>
             {
                 options.Client.Clients.Add("client", new ClientCredentialsTokenRequest
                 {
-                    Address = $"{identityOptions.Authority.TrimEnd('/')}/connect/token",
-                    ClientId = identityOptions.ClientId,
-                    ClientSecret = identityOptions.ClientSecret,
-                    Scope = "api"
+                    Address = $"{apiOptions.Identity.Authority.TrimEnd('/')}/connect/token",
+                    ClientId = apiOptions.Identity.ClientId,
+                    ClientSecret = apiOptions.Identity.ClientSecret,
+                    Scope = string.Join(" ", apiOptions.Identity.Scopes),
                 });
             });
 

@@ -17,13 +17,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{26EA7770-BD3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{F780D880-4378-4D46-BBF7-1156C6CDE101}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Notes.Common", "..\..\Common\Demo.Notes.Common\Demo.Notes.Common.csproj", "{1D77028F-C2C1-4BED-9BD9-736C1CA88A47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Notes.Common", "..\..\Common\Demo.Notes.Common\Demo.Notes.Common.csproj", "{1D77028F-C2C1-4BED-9BD9-736C1CA88A47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Notes.Web.UserApi.Host", "Demo.Notes.Web.UserApi.Host\Demo.Notes.Web.UserApi.Host.csproj", "{D7AF8FE8-17BE-4A4A-A191-795A1291FD30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Notes.Web.UserApi.Host", "Demo.Notes.Web.UserApi.Host\Demo.Notes.Web.UserApi.Host.csproj", "{D7AF8FE8-17BE-4A4A-A191-795A1291FD30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Notes.Web.AdminApi.Host", "Demo.Notes.Web.AdminApi.Host\Demo.Notes.Web.AdminApi.Host.csproj", "{516EBB77-85D9-4E6C-A376-639EE57C0DE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Notes.Web.AdminApi.Host", "Demo.Notes.Web.AdminApi.Host\Demo.Notes.Web.AdminApi.Host.csproj", "{516EBB77-85D9-4E6C-A376-639EE57C0DE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.Partner.ExternalApi.Host", "Demo.Partner.ExternalApi.Host\Demo.Partner.ExternalApi.Host.csproj", "{EA32E1C2-0639-41D0-9591-EC6CD20ED422}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Demo.Partner.ExternalApi.Host", "Demo.Partner.ExternalApi.Host\Demo.Partner.ExternalApi.Host.csproj", "{EA32E1C2-0639-41D0-9591-EC6CD20ED422}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
