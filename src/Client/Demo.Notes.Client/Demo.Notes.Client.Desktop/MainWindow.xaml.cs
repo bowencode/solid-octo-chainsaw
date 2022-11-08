@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using IdentityModel.OidcClient.Results;
 
 namespace Demo.Notes.Client.Desktop
 {
@@ -25,7 +26,7 @@ namespace Demo.Notes.Client.Desktop
             InitializeComponent();
         }
 
-        private static async Task SaveUserData(UserData userData)
+        private static async Task SaveUserData(UserTokenData userData)
         {
             var json = JsonSerializer.Serialize(userData);
             var keys = ProtectedData.Protect(Encoding.UTF8.GetBytes(json), EntropyData, DataProtectionScope.CurrentUser);
@@ -38,14 +39,14 @@ namespace Demo.Notes.Client.Desktop
             await File.WriteAllBytesAsync(filePath, keys);
         }
 
-        private static async Task<UserData?> LoadUserData()
+        private static async Task<UserTokenData?> LoadUserData()
         {
             try
             {
                 var keys = await File.ReadAllBytesAsync(UserDataFilePath);
                 var data = ProtectedData.Unprotect(keys, EntropyData, DataProtectionScope.CurrentUser);
                 var json = Encoding.UTF8.GetString(data);
-                return JsonSerializer.Deserialize<UserData>(json);
+                return JsonSerializer.Deserialize<UserTokenData>(json);
             }
             catch (Exception)
             {
@@ -78,57 +79,73 @@ namespace Demo.Notes.Client.Desktop
             {
                 var refreshTokenResult = await oidcClient.RefreshTokenAsync(savedLogin.RefreshToken);
 
-                var userData = new UserData
+                if (!refreshTokenResult.IsError)
                 {
-                    AccessToken = refreshTokenResult.AccessToken,
-                    RefreshToken = refreshTokenResult.RefreshToken,
-                    AccessTokenExpiration = refreshTokenResult.AccessTokenExpiration,
-                };
+                    await SetRefreshUser(oidcClient, refreshTokenResult);
 
-                ViewModel.Tokens = userData;
+                    await ViewModel.LoadData();
 
-                await SaveUserData(userData);
-
-                var userInfoResult = await oidcClient.GetUserInfoAsync(userData.AccessToken);
-
-                ViewModel.ErrorMessage = null;
-                ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(userInfoResult.Claims, "idp", "name", null));
-                var name = claimsPrincipal.Identity?.Name;
-                ViewModel.User = claimsPrincipal;
+                    return;
+                }
             }
-            else
+
+            LoginResult loginResult;
+            try
             {
-                LoginResult loginResult;
-                try
-                {
-                    loginResult = await oidcClient.LoginAsync();
-                }
-                catch (Exception exception)
-                {
-                    ViewModel.ErrorMessage = $"Unexpected Error: {exception.Message}";
-                    return;
-                }
-
-                if (loginResult.IsError)
-                {
-                    ViewModel.ErrorMessage = loginResult.Error == "UserCancel" ? "The sign-in window was closed before authorization was completed." : loginResult.Error;
-                    return;
-                }
-
-                ViewModel.ErrorMessage = null;
-                ViewModel.User = loginResult.User;
-
-                var userData = new UserData
-                {
-                    AccessToken = loginResult.AccessToken,
-                    RefreshToken = loginResult.RefreshToken,
-                    AccessTokenExpiration = loginResult.AccessTokenExpiration,
-                };
-
-                ViewModel.Tokens = userData;
-
-                await SaveUserData(userData);
+                loginResult = await oidcClient.LoginAsync();
             }
+            catch (Exception exception)
+            {
+                ViewModel.ErrorMessage = $"Unexpected Error: {exception.Message}";
+                return;
+            }
+
+            if (loginResult.IsError)
+            {
+                ViewModel.ErrorMessage = loginResult.Error == "UserCancel" ? "The sign-in window was closed before authorization was completed." : loginResult.Error;
+                return;
+            }
+
+            await SetLoggedInUser(loginResult);
+
+            await ViewModel.LoadData();
+        }
+
+        private async Task SetLoggedInUser(LoginResult loginResult)
+        {
+            ViewModel.ErrorMessage = null;
+            ViewModel.User = loginResult.User;
+
+            var userData = new UserTokenData
+            {
+                AccessToken = loginResult.AccessToken,
+                RefreshToken = loginResult.RefreshToken,
+                AccessTokenExpiration = loginResult.AccessTokenExpiration,
+            };
+
+            ViewModel.Tokens = userData;
+
+            await SaveUserData(userData);
+        }
+
+        private async Task SetRefreshUser(OidcClient oidcClient, RefreshTokenResult refreshTokenResult)
+        {
+            var userData = new UserTokenData
+            {
+                AccessToken = refreshTokenResult.AccessToken,
+                RefreshToken = refreshTokenResult.RefreshToken,
+                AccessTokenExpiration = refreshTokenResult.AccessTokenExpiration,
+            };
+
+            ViewModel.Tokens = userData;
+
+            await SaveUserData(userData);
+
+            var userInfoResult = await oidcClient.GetUserInfoAsync(userData.AccessToken);
+
+            ViewModel.ErrorMessage = null;
+            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(userInfoResult.Claims, "idp", "name", null));
+            ViewModel.User = claimsPrincipal;
         }
     }
 }

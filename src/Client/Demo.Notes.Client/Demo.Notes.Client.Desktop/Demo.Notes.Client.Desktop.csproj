@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1418.22" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Demo.Notes.Common\Demo.Notes.Common.csproj" />
+  </ItemGroup>
+
 </Project>

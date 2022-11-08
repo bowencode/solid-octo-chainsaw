@@ -2,7 +2,7 @@
 
 namespace Demo.Notes.Client.Desktop
 {
-    public class UserData
+    public class UserTokenData
     {
         public string? AccessToken { get; set; }
         public string? RefreshToken { get; set; }
