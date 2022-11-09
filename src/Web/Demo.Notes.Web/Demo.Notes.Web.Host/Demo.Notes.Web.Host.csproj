@@ -4,11 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>d02bb1a3-02a9-4327-a589-8a7f4409343f</UserSecretsId>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="Pages\UserList.cshtml" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.10" />
@@ -24,10 +21,6 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Pages\UserList.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Pages\UserList.cshtml" />
   </ItemGroup>
 
 </Project>

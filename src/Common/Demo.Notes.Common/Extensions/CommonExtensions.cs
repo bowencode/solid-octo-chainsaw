@@ -35,7 +35,6 @@ public static class CommonExtensions
 
     public static string GetUserId(this ClaimsPrincipal claimsPrincipal)
     {
-        var currentUserId = claimsPrincipal.FindFirst("sub")?.Value;
-        return currentUserId;
+        return claimsPrincipal.FindFirst("sub")?.Value;
     }
 }

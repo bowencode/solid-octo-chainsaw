@@ -1,5 +1,7 @@
 using Demo.Notes.Common.Configuration;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Demo.Notes.Web.UserApi.Host
 {
@@ -11,6 +13,21 @@ namespace Demo.Notes.Web.UserApi.Host
 
             // Add services to the container.
             AddAuthenticatedApiAccess(builder.Services, builder.Configuration);
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opt =>
+                {
+                    opt.Authority = "https://localhost:5001";
+                    opt.Audience = "https://localhost:5001/resources";
+                    opt.MapInboundClaims = false;
+                    opt.RequireHttpsMetadata = true;
+                    opt.SaveToken = true;
+                    opt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        RequireAudience = true,
+                    };
+                });
 
             builder.Services.Configure<CosmosOptions>(builder.Configuration.GetSection("Cosmos"));
 
@@ -30,6 +47,7 @@ namespace Demo.Notes.Web.UserApi.Host
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
 using Demo.Notes.Common.Extensions;
+using Microsoft.Azure.Cosmos.Linq;
 
 namespace Demo.Notes.Web.UserApi.Host.Controllers
 {
@@ -13,6 +14,9 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         private readonly ILogger<NoteController> _logger;
         private readonly HttpClient _httpClient;
         private readonly CosmosOptions _dbOptions;
+
+        private string? CurrentUserId => User.GetUserId();
+        private static CosmosLinqSerializerOptions SerializerOptions => new CosmosLinqSerializerOptions { PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase };
 
         public NoteController(ILogger<NoteController> logger, IHttpClientFactory httpClientFactory, IOptions<CosmosOptions> dbOptions)
         {
@@ -26,24 +30,32 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         [HttpGet("api/note/")]
         public async Task<IActionResult> Get()
         {
-            var currentUserId = User.GetUserId();
             var container = await GetNotesContainerAsync();
 
-            var allNotes = container.GetItemLinqQueryable<NoteData>()
-                .Where(n => n.UserId == currentUserId)
+            if (CurrentUserId == null)
+                return BadRequest();
+
+            var allNotes = container.GetItemLinqQueryable<NoteData>(
+                    allowSynchronousQueryExecution: true, 
+                    linqSerializerOptions: SerializerOptions)
+                .Where(n => n.UserId == CurrentUserId)
                 .ToList();
+
             return Ok(allNotes);
         }
 
         [HttpGet("api/note/{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var currentUserId = User.GetUserId();
             var container = await GetNotesContainerAsync();
             var note = container
-                .GetItemLinqQueryable<NoteData>(requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(id) })
-                .Where(n => n.UserId == currentUserId)
-                .FirstOrDefault(n => n.Id == id);
+                .GetItemLinqQueryable<NoteData>(
+                    allowSynchronousQueryExecution: true,
+                    requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(id) },
+                    linqSerializerOptions: SerializerOptions)
+                .Where(n => n.UserId == CurrentUserId && n.Id == id)
+                .AsEnumerable()
+                .FirstOrDefault();
 
             if (note == null)
             {
@@ -61,11 +73,10 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
                 return BadRequest();
             }
 
-            var currentUserId = User.GetUserId();
-            string username = await _httpClient.GetStringAsync($"username/{currentUserId}");
+            string username = await _httpClient.GetStringAsync($"username/{CurrentUserId}");
 
             note.Id = Guid.NewGuid().ToString();
-            note.UserId = currentUserId;
+            note.UserId = CurrentUserId;
             note.Username = username;
             note.Updated = DateTime.UtcNow;
 
@@ -82,9 +93,7 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         [HttpPut("api/note/{id}")]
         public async Task<IActionResult> Put(string id, NoteData note)
         {
-            var currentUserId = User.GetUserId();
-
-            if (string.IsNullOrWhiteSpace(note.UserId) || id != note.Id || note.UserId != currentUserId)
+            if (string.IsNullOrWhiteSpace(note.UserId) || id != note.Id || note.UserId != CurrentUserId)
             {
                 return BadRequest();
             }
@@ -104,12 +113,15 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         [HttpDelete("api/note/{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var currentUserId = User.GetUserId();
             var container = await GetNotesContainerAsync();
             var note = container
-                .GetItemLinqQueryable<NoteData>(requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(id) })
-                .Where(n => n.UserId == currentUserId)
-                .FirstOrDefault(n => n.Id == id);
+                .GetItemLinqQueryable<NoteData>(
+                    allowSynchronousQueryExecution: true,
+                    requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(id) }, 
+                    linqSerializerOptions: SerializerOptions)
+                .Where(n => n.UserId == CurrentUserId && n.Id == id)
+                .AsEnumerable()
+                .FirstOrDefault();
 
             if (note == null)
             {

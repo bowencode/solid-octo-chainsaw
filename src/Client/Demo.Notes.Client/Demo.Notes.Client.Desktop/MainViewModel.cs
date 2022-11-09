@@ -17,6 +17,7 @@ namespace Demo.Notes.Client.Desktop
     {
         private ClaimsPrincipal? _user;
         private string? _errorMessage;
+        private UserTokenData? _tokens;
 
         public string? ErrorMessage
         {
@@ -37,7 +38,12 @@ namespace Demo.Notes.Client.Desktop
         public ObservableCollection<ExtendedUserData> AllUsers { get; } = new ObservableCollection<ExtendedUserData>();
 
         public bool IsLoggedIn => User != null;
-        public UserTokenData? Tokens { get; set; }
+
+        public UserTokenData? Tokens
+        {
+            get => _tokens;
+            set => SetField(ref _tokens, value);
+        }
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;

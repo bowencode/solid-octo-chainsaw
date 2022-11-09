@@ -5,3 +5,14 @@
 
 <h1>Users</h1>
 
+@if (Model.Error != null)
+{
+    <h3 class="alert-danger">@Model.Error</h3>
+}
+
+<ul>
+@foreach (var userSummary in Model.Users)
+{
+    <li>@userSummary.Id - @userSummary.Username</li>
+}
+</ul>

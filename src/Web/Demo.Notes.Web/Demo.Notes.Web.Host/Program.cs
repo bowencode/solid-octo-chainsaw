@@ -1,3 +1,4 @@
+using Demo.Notes.Common.Configuration;
 using Microsoft.AspNetCore.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
@@ -14,6 +15,9 @@ public class Program
         builder.Services.AddRazorPages();
 
         ConfigureAuthentication(builder);
+
+        builder.Services.Configure<AdminApiOptions>(builder.Configuration.GetSection("AdminApi"));
+        builder.Services.Configure<UserApiOptions>(builder.Configuration.GetSection("UserApi"));
 
         builder.Services.AddHttpContextAccessor();
 

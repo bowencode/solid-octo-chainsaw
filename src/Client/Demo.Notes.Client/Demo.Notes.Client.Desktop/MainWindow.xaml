@@ -25,6 +25,29 @@
         </Border>
         <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" TextWrapping="Wrap" DockPanel.Dock="Top"/>
 
+        <Border DockPanel.Dock="Bottom" MaxHeight="300" BorderThickness="1" BorderBrush="Black">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <ItemsControl ItemsSource="{Binding User.Claims}" Margin="5,0,5,10">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock TextTrimming="CharacterEllipsis">
+                                    <Run Text="{Binding Type, Mode=OneWay}"/>
+                                    <Run Text="="/>
+                                    <Run Text="{Binding Value, Mode=OneWay}"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock TextWrapping="Wrap" Text="{Binding Tokens.AccessToken}" Margin="5"/>
+                    <TextBlock TextWrapping="Wrap" Margin="5">
+                        <Run Text="Expires:"/>
+                        <Run Text="{Binding Tokens.AccessTokenExpiration, Mode=OneWay, StringFormat=O}"/>
+                    </TextBlock>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
         <Grid TextBlock.FontSize="18" DockPanel.Dock="Top" Margin="10,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" MaxWidth="200" SharedSizeGroup="id"/>

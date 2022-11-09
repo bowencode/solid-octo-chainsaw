@@ -41,6 +41,17 @@ public static class Config
 
                 AllowedScopes = { "scope1" }
             },
+            
+            new Client
+            {
+                ClientId = "m2m.web-admin",
+                ClientName = "Web App Admin Client Credentials Client",
+
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+                ClientSecrets = { new Secret("7954d1dd-49c0-4b9e-acd9-780c78a5570e".Sha256()) },
+
+                AllowedScopes = { "read:users" }
+            },
 
             // interactive client using code flow + pkce
             new Client
