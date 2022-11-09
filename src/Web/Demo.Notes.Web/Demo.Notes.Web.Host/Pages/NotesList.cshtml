@@ -10,6 +10,13 @@
 
 <h2>List of Notes</h2>
 
+@foreach (var note in Model.AllNotes)
+{
+    <div>
+        <a asp-page="/Note" asp-route-id="@note.Id">@note.Text.Substring(20) - @note.Updated.ToString("g")</a>
+    </div>
+}
+
 <h2>Claims</h2>
 
 <dl>

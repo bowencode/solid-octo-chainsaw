@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authentication;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Headers;
 
 namespace Demo.Notes.Web.Host;
 
@@ -14,6 +16,16 @@ public class Program
         ConfigureAuthentication(builder);
 
         builder.Services.AddHttpContextAccessor();
+
+        builder.Services.AddHttpClient("userApi", (sp, client) =>
+        {
+            var config = sp.GetRequiredService<IConfiguration>();
+            var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+
+            client.BaseAddress = config.GetValue<Uri>("UserApi:Host");
+            var token = httpContextAccessor.HttpContext?.GetTokenAsync("access_token").GetAwaiter().GetResult();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        });
 
         var app = builder.Build();
 
