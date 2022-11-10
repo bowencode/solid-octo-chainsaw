@@ -50,6 +50,7 @@ namespace Demo.Notes.Web.Blazor
 
             app.MapBffManagementEndpoints();
 
+            app.MapReverseProxy();
             app.MapRazorPages();
             app.MapControllers();
             app.MapFallbackToFile("index.html");
@@ -100,9 +101,9 @@ namespace Demo.Notes.Web.Blazor
         {
             var identityOptions = builder.Configuration.GetSection("Identity").Get<IdentityServerOptions>();
 
-            builder.Services.AddAccessTokenManagement(options =>
+            builder.Services.Configure<ClientAccessTokenManagementOptions>(options =>
             {
-                options.Client.Clients.Add("proxy", new ClientCredentialsTokenRequest
+                options.Clients.Add("proxy", new ClientCredentialsTokenRequest
                 {
                     Address = $"{identityOptions.Authority.TrimEnd('/')}/connect/token",
                     ClientId = identityOptions.ClientId,
@@ -115,7 +116,7 @@ namespace Demo.Notes.Web.Blazor
                 .AddTransforms(builderContext =>
                 {
                     var cluster = builderContext.Cluster?.ClusterId;
-                    if (cluster == "dataApi")
+                    if (cluster == "userApi")
                     {
                         // Conditionally add a transform for routes that require auth.
                         builderContext.AddRequestTransform(async transformContext =>
@@ -125,7 +126,7 @@ namespace Demo.Notes.Web.Blazor
                             transformContext.ProxyRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
                         });
                     }
-                    else if (cluster == "legacyApi")
+                    else if (cluster == "adminApi")
                     {
                         // Conditionally add a transform for routes that require auth.
                         builderContext.AddRequestTransform(async transformContext =>
