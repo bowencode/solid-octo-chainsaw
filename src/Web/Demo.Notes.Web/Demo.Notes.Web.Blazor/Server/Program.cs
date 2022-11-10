@@ -1,5 +1,11 @@
+using System.Net.Http.Headers;
 using Demo.Notes.Common.Configuration;
+using IdentityModel.AspNetCore.AccessTokenManagement;
+using IdentityModel.Client;
+using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Options;
+using Yarp.ReverseProxy.Transforms;
 
 namespace Demo.Notes.Web.Blazor
 {
@@ -15,6 +21,7 @@ namespace Demo.Notes.Web.Blazor
             builder.Services.AddRazorPages();
 
             AddIdentityAuthentication(builder);
+            AddConfiguredReverseProxy(builder);
 
             var app = builder.Build();
 
@@ -87,6 +94,47 @@ namespace Demo.Notes.Web.Blazor
                     options.GetClaimsFromUserInfoEndpoint = true;
                     options.SaveTokens = true;
                 });
+        }
+
+        private static void AddConfiguredReverseProxy(WebApplicationBuilder builder)
+        {
+            var identityOptions = builder.Configuration.GetSection("Identity").Get<IdentityServerOptions>();
+
+            builder.Services.AddAccessTokenManagement(options =>
+            {
+                options.Client.Clients.Add("proxy", new ClientCredentialsTokenRequest
+                {
+                    Address = $"{identityOptions.Authority.TrimEnd('/')}/connect/token",
+                    ClientId = identityOptions.ClientId,
+                    ClientSecret = identityOptions.ClientSecret,
+                    Scope = string.Join(" ", identityOptions.Scopes),
+                });
+            });
+
+            var proxyBuilder = builder.Services.AddReverseProxy()
+                .AddTransforms(builderContext =>
+                {
+                    var cluster = builderContext.Cluster?.ClusterId;
+                    if (cluster == "dataApi")
+                    {
+                        // Conditionally add a transform for routes that require auth.
+                        builderContext.AddRequestTransform(async transformContext =>
+                        {
+                            var provider = builderContext.Services.GetRequiredService<IClientAccessTokenManagementService>();
+                            var token = await provider.GetClientAccessTokenAsync("proxy");
+                            transformContext.ProxyRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                        });
+                    }
+                    else if (cluster == "legacyApi")
+                    {
+                        // Conditionally add a transform for routes that require auth.
+                        builderContext.AddRequestTransform(async transformContext =>
+                        {
+                            // includes user token in request
+                        });
+                    }
+                });
+            proxyBuilder.LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
         }
     }
 }
