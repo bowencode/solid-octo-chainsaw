@@ -171,7 +171,26 @@ public static class Config
                     IdentityServerConstants.StandardScopes.OfflineAccess,
                     "read:user-details",
                 }
-            }
+            },
 
+            // interactive client for SPA client application
+            new Client
+            {
+                ClientId = "spa-user-ui",
+                AllowedGrantTypes = GrantTypes.Code,
+                RequireClientSecret = false,
+
+                RedirectUris =           { "https://localhost:3000/callback.html" },
+                PostLogoutRedirectUris = { "https://localhost:3000/index.html" },
+                AllowedCorsOrigins =     { "https://localhost:3000" },
+
+                AllowedScopes =
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    "read:notes",
+                    "list:notes",
+                }
+            }
         };
 }

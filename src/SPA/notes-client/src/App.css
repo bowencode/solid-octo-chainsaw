@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+.token-display {
+  width: 60%;
+  min-height: 200px;
+}

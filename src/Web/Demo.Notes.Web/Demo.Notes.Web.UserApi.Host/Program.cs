@@ -2,6 +2,7 @@ using Demo.Notes.Common.Configuration;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 
 namespace Demo.Notes.Web.UserApi.Host
 {
@@ -31,6 +32,16 @@ namespace Demo.Notes.Web.UserApi.Host
 
             builder.Services.Configure<CosmosOptions>(builder.Configuration.GetSection("Cosmos"));
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(name: "ClientSideSPA",
+                    policy =>
+                    {
+                        policy.WithOrigins("https://localhost:3000");
+                        policy.WithHeaders(HeaderNames.Authorization);
+                    });
+            });
+
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -47,9 +58,10 @@ namespace Demo.Notes.Web.UserApi.Host
 
             app.UseHttpsRedirection();
 
+            app.UseCors();
+
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

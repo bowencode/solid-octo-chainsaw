@@ -5,6 +5,7 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
 using Demo.Notes.Common.Extensions;
 using Microsoft.Azure.Cosmos.Linq;
+using Microsoft.AspNetCore.Cors;
 
 namespace Demo.Notes.Web.UserApi.Host.Controllers
 {
@@ -27,6 +28,7 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
             GetClient();
         }
 
+        [EnableCors("ClientSideSPA")]
         [HttpGet("api/note/")]
         public async Task<IActionResult> Get()
         {
