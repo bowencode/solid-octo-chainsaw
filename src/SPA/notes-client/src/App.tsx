@@ -16,16 +16,6 @@ function getUser() {
 function App() {
   const auth = useAuth();
   
-  // const oidcConfig = {
-  //   authority: "https://localhost:5001",
-  //   client_id: "spa-user-ui",
-  //   redirect_uri: "https://localhost:3000/callback.html",
-  // };
-  // const userManager = new UserManager(oidcConfig);
-  // userManager.getUser().then(u => {
-  //   alert(JSON.stringify(u?.profile));
-  // });
-
   switch (auth.activeNavigator) {
     case "signinSilent":
       return <div>Signing you in...</div>;
@@ -47,7 +37,7 @@ function App() {
 
     return (
       <div className="App">
-        Hello {auth.user?.profile.sub}{" "}
+        Hello {auth.user?.profile.name}{" "}
         <button onClick={() => void auth.removeUser()}>Log out</button>
         <div>
           Your access token is:

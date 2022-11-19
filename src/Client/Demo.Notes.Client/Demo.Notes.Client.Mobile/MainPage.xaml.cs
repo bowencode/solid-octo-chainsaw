@@ -1,24 +1,109 @@
-﻿namespace Demo.Notes.Client.Mobile
+﻿using System.Security.Claims;
+using System.Text;
+using IdentityModel.Client;
+using IdentityModel.OidcClient;
+using System.Text.Json;
+using System.Net.Http.Json;
+using Demo.Notes.Common.Model;
+using System.Collections.ObjectModel;
+
+namespace Demo.Notes.Client.Mobile
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
+        private readonly OidcClient _client;
+        private ClaimsPrincipal _currentUser;
+        private string _accessToken;
 
-        public MainPage()
+        public MainPage(OidcClient client)
         {
             InitializeComponent();
+            _client = client;
+            
+            BindingContext = this;
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        private void OnLogoutClicked(object sender, EventArgs e)
         {
-            count++;
+            CurrentUser = null;
+            AccessToken = null;
+            NotesList.Clear();
+        }
 
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
+        private async void OnLoginClicked(object sender, EventArgs e)
+        {
+            var result = await _client.LoginAsync();
 
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            if (result.IsError)
+            {
+                Editor.Text = result.Error;
+                return;
+            }
+
+            CurrentUser = result.User;
+            AccessToken = result.AccessToken;
+
+            if (AccessToken != null)
+            {
+                var client = new HttpClient();
+                client.SetBearerToken(AccessToken);
+
+                var response = await client.GetAsync("https://localhost:7274/api/note/");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadFromJsonAsync<List<NoteData>>();
+                    NotesList.Clear();
+                    foreach (var item in content)
+                    {
+                        NotesList.Add(item);
+                    }
+                }
+                else
+                {
+                    Editor.Text = response.ReasonPhrase;
+                }
+            }
+        }
+
+        public ObservableCollection<NoteData> NotesList { get; } = new ObservableCollection<NoteData>();
+
+        public string AccessToken
+        {
+            get => _accessToken;
+            set
+            {
+                if (value == _accessToken) return;
+                _accessToken = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ClaimsData));
+            }
+        }
+
+        public ClaimsPrincipal CurrentUser
+        {
+            get => _currentUser;
+            set
+            {
+                if (Equals(value, _currentUser))
+                    return;
+                _currentUser = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsLoggedIn));
+                OnPropertyChanged(nameof(IsLoggedOut));
+                OnPropertyChanged(nameof(ClaimsData));
+            }
+        }
+
+        public bool IsLoggedIn => CurrentUser != null;
+        public bool IsLoggedOut => CurrentUser == null;
+
+        public string ClaimsData
+        {
+            get
+            {
+                string userClaims = String.Join('\n', CurrentUser?.Claims.Select(claim => $"{claim.Type}: {claim.Value}") ?? new List<string>());
+                return $"{userClaims}\n\nAccess Token:\n{AccessToken}";
+            }
         }
     }
 }

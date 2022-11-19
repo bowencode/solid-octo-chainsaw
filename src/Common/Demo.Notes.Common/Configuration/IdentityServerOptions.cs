@@ -8,5 +8,10 @@ namespace Demo.Notes.Common.Configuration
         public string ClientId { get; set; } = null!;
         public string ClientSecret { get; set; } = null!;
         public List<string> Scopes { get; set; } = new List<string>();
+
+        public string GetScope()
+        {
+            return string.Join(" ", Scopes);
+        }
     }
 }

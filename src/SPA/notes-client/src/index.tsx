@@ -18,6 +18,7 @@ const oidcConfig = {
   authority: "https://localhost:5001",
   client_id: "spa-user-ui",
   redirect_uri: "https://localhost:3000/callback.html",
+  scope: "openid profile read:notes list:notes",
   onSigninCallback: signinCallback,
 };
 

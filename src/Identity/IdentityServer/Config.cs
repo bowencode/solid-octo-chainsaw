@@ -139,7 +139,6 @@ public static class Config
                 }
             },
 
-            
             // interactive client for desktop client admin application
             new Client
             {
@@ -184,6 +183,8 @@ public static class Config
                 PostLogoutRedirectUris = { "https://localhost:3000/index.html" },
                 AllowedCorsOrigins =     { "https://localhost:3000" },
 
+                AlwaysIncludeUserClaimsInIdToken = true,
+
                 AllowedScopes =
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
@@ -191,6 +192,39 @@ public static class Config
                     "read:notes",
                     "list:notes",
                 }
-            }
+            },
+
+            // interactive client for desktop client admin application
+            new Client
+            {
+                ClientId = "mobile-user-ui",
+                RequireClientSecret = false,
+
+                AllowedGrantTypes = GrantTypes.Code,
+                AllowOfflineAccess = true,
+
+                // where to redirect to after login
+                RedirectUris =
+                {
+                    "notesmobiledemo://callback",
+                },
+
+                // where to redirect to after logout
+                PostLogoutRedirectUris =
+                {
+                    "notesmobiledemo://callback",
+                },
+
+                AllowedScopes = new List<string>
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email,
+                    IdentityServerConstants.StandardScopes.OfflineAccess,
+                    "read:notes",
+                    "list:notes",
+                    "write:notes",
+                }
+            },
         };
 }

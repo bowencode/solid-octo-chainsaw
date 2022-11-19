@@ -108,7 +108,7 @@ namespace Demo.Notes.Web.Blazor
                     Address = $"{identityOptions.Authority.TrimEnd('/')}/connect/token",
                     ClientId = identityOptions.ClientId,
                     ClientSecret = identityOptions.ClientSecret,
-                    Scope = string.Join(" ", identityOptions.Scopes),
+                    Scope = identityOptions.GetScope(),
                 });
             });
 
