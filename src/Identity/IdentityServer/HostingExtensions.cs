@@ -76,8 +76,29 @@ internal static class HostingExtensions
                     {
                         context.Response.Redirect("/Home/Error?message=" + WebUtility.UrlEncode(context.Failure?.Message));
                     }
+
                     return Task.CompletedTask;
                 };
+            })
+            .AddOpenIdConnect("auth0", "Auth0", options =>
+            {
+                var auth0 = builder.Configuration.GetSection("Auth0").Get<Auth0Options>();
+
+                options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
+                options.ClientId = auth0.ClientId;
+                options.Authority = auth0.Authority;
+                options.RequireHttpsMetadata = true;
+                options.ClientSecret = auth0.ClientSecret;
+                options.CallbackPath = "/signin-oidc-auth0";
+
+                options.ResponseType = "code id_token";
+                options.SaveTokens = true;
+                options.GetClaimsFromUserInfoEndpoint = true;
+                options.Scope.Clear();
+                options.Scope.Add("openid");
+                options.Scope.Add("profile");
+                options.Scope.Add("email");
+
             });
 
         return builder.Build();
