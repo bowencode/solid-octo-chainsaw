@@ -348,4 +348,4 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
-/src/Client/Demo.Notes.Client/.cr/personal/FavoritesList/List.xml
+/**/.cr/personal/FavoritesList/List.xml

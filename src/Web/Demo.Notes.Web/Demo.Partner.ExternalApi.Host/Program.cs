@@ -13,6 +13,23 @@ namespace Demo.Partner.ExternalApi.Host
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            var section = builder.Configuration.GetSection("Auth");
+            builder.Services.AddAuthentication()
+                .AddJwtBearer(options =>
+                {
+                    var authority = section.GetValue<string>("Authority");
+                    options.Authority = authority;
+                });
+            builder.Services.AddAuthorization(options =>
+            {
+                var scope = section.GetValue<string>("RequiredScope");
+                options.AddPolicy("default", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", scope);
+                });
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -24,6 +41,7 @@ namespace Demo.Partner.ExternalApi.Host
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

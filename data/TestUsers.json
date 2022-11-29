@@ -32,7 +32,7 @@
       },
       {
         "Type": "address",
-        "Value": "{\"street_address\":\"One Hacker Way\",\"locality\":\"Heidelberg\",\"postal_code\":69118,\"country\":\"Germany\"}",
+        "Value": "{\"street_address\":\"100 Oak Ave.\",\"locality\":\"NY\",\"postal_code\":10001,\"state\":\"NY\"}",
         "ValueType": "json"
       }
     ]
@@ -70,7 +70,7 @@
       },
       {
         "Type": "address",
-        "Value": "{\"street_address\":\"One Hacker Way\",\"locality\":\"Heidelberg\",\"postal_code\":69118,\"country\":\"Germany\"}",
+        "Value": "{\"street_address\":\"123 Main St.\",\"locality\":\"San Diego\",\"postal_code\":92001,\"state\":\"CA\"}",
         "ValueType": "json"
       }
     ]
@@ -129,6 +129,32 @@
       {
         "Type": "email",
         "Value": "test@bowencode.com"
+      }
+    ]
+  },
+  {
+    "SubjectId": "5",
+    "Username": "external@bowencode.com",
+    "Password": "N/A",
+    "ProviderName": "auth0",
+    "ProviderSubjectId": "auth0|63859b949b9c4feffbf71905",
+    "IsActive": true,
+    "Claims": [
+      {
+        "Type": "name",
+        "Value": "External User"
+      },
+      {
+        "Type": "given_name",
+        "Value": "External"
+      },
+      {
+        "Type": "family_name",
+        "Value": "User"
+      },
+      {
+        "Type": "email",
+        "Value": "external@bowencode.com"
       }
     ]
   }
