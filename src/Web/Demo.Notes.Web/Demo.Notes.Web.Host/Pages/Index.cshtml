@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Security.Claims
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -6,5 +7,18 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <ul>
+    @foreach (Claim userClaim in User.Claims)
+    {
+        <li>@userClaim.Type: @userClaim.Value</li>
+    }
+    </ul>
+}
+else
+{
+    <h3>Not Logged In</h3>
+}

@@ -12,6 +12,7 @@ public static class Config
             new IdentityResources.Profile(),
             new IdentityResources.Email(),
             new IdentityResources.Address(),
+            new IdentityResource("thirdParty", new []{ "externalAccessToken" })
         };
 
     public static IEnumerable<ApiScope> ApiScopes =>
@@ -221,6 +222,7 @@ public static class Config
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Email,
                     IdentityServerConstants.StandardScopes.OfflineAccess,
+                    "thirdParty",
                     "read:notes",
                     "list:notes",
                     "write:notes",

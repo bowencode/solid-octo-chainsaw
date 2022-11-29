@@ -1,3 +1,4 @@
+using Demo.Notes.Common.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Partner.ExternalApi.Host.Controllers

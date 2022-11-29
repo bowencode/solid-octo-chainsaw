@@ -1,4 +1,6 @@
-namespace Demo.Partner.ExternalApi.Host
+using System;
+
+namespace Demo.Notes.Common.Model
 {
     public class CalendarEvent
     {

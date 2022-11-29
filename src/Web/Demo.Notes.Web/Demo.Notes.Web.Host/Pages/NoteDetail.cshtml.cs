@@ -1,9 +1,11 @@
 using Demo.Notes.Common.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Demo.Notes.Web.Host.Pages
 {
+    [Authorize]
     public class NoteDetailModel : PageModel
     {
         private readonly HttpClient _httpClient;

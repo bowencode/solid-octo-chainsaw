@@ -1,5 +1,6 @@
 using Duende.IdentityServer;
 using IdentityServer.Configuration;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Serilog;
 using System.Net;
@@ -90,7 +91,14 @@ internal static class HostingExtensions
                 options.RequireHttpsMetadata = true;
                 options.ClientSecret = auth0.ClientSecret;
                 options.CallbackPath = "/signin-oidc-auth0";
-
+                options.Events = new OpenIdConnectEvents
+                {
+                    OnRedirectToIdentityProvider = context =>
+                    {
+                        context.ProtocolMessage.SetParameter("audience", auth0.Audience);
+                        return Task.CompletedTask;
+                    },
+                };
                 options.ResponseType = "code id_token";
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
@@ -98,6 +106,7 @@ internal static class HostingExtensions
                 options.Scope.Add("openid");
                 options.Scope.Add("profile");
                 options.Scope.Add("email");
+                options.Scope.Add("read:calendar");
 
             });
 

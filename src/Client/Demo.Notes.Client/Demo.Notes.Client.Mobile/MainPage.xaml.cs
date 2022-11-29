@@ -63,9 +63,32 @@ namespace Demo.Notes.Client.Mobile
                     Editor.Text = response.ReasonPhrase;
                 }
             }
+
+            var thirdPartyToken = CurrentUser.FindFirst("externalAccessToken")?.Value;
+            if (thirdPartyToken != null)
+            {
+                var client = new HttpClient();
+                client.SetBearerToken(thirdPartyToken);
+
+                var response = await client.GetAsync("https://localhost:7217/calendar/");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadFromJsonAsync<List<CalendarEvent>>();
+                    CalendarList.Clear();
+                    foreach (var item in content)
+                    {
+                        CalendarList.Add(item);
+                    }
+                }
+                else
+                {
+                    Editor.Text = response.ReasonPhrase;
+                }
+            }
         }
 
         public ObservableCollection<NoteData> NotesList { get; } = new ObservableCollection<NoteData>();
+        public ObservableCollection<CalendarEvent> CalendarList { get; } = new ObservableCollection<CalendarEvent>();
 
         public string AccessToken
         {

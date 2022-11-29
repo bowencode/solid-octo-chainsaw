@@ -50,8 +50,27 @@
                         <DataTemplate>
                             <ViewCell>
                                 <HorizontalStackLayout>
-                                    <Label Text="{Binding Updated}"/>
+                                    <Label Text="{Binding Updated}" VerticalOptions="Center" Margin="10,0"/>
                                     <Editor Text="{Binding Text}"/>
+                                </HorizontalStackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <Label
+                    Text="My Events"
+                    SemanticProperties.HeadingLevel="Level1"
+                    FontSize="32"
+                    HorizontalOptions="Center" />
+
+                <ListView ItemsSource="{Binding CalendarList}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <HorizontalStackLayout>
+                                    <Label Text="{Binding Date, StringFormat='{0:d}'}" Margin="10,0" VerticalOptions="Center"/>
+                                    <Editor TextColor="Blue" Text="{Binding Description}"/>
                                 </HorizontalStackLayout>
                             </ViewCell>
                         </DataTemplate>

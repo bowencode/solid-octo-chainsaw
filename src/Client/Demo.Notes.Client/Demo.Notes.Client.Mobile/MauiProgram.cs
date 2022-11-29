@@ -29,6 +29,7 @@ namespace Demo.Notes.Client.Mobile
                 {
                     "openid",
                     "profile",
+                    "thirdParty",
                     "read:notes",
                     "list:notes",
                     "write:notes",
@@ -39,17 +40,6 @@ namespace Demo.Notes.Client.Mobile
             builder.Services.AddSingleton(sp =>
             {
                 var options = sp.GetRequiredService<IOptions<IdentityServerOptions>>().Value;
-                //var options = new IdentityServerOptions();
-                //options.Authority = "https://localhost:5001";
-                //options.ClientId = "mobile-user-ui";
-                //options.Scopes = new List<string>
-                //{
-                //    "openid",
-                //    "profile",
-                //    "read:notes",
-                //    "list:notes",
-                //    "write:notes",
-                //};
 
                 return new OidcClient(new()
                 {

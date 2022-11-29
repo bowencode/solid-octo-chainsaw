@@ -62,6 +62,9 @@ public class Callback : PageModel
         var provider = result.Properties.Items["scheme"];
         var providerUserId = userIdClaim.Value;
 
+        // if the external provider issued an access_token, we'll supply it as an optional claim
+        var accessToken = result.Properties.GetTokenValue("access_token");
+
         // find external user
         var user = _users.FindByExternalProvider(provider, providerUserId);
         if (user == null)
@@ -74,6 +77,11 @@ public class Callback : PageModel
             var claims = externalUser.Claims.ToList();
             claims.Remove(userIdClaim);
             user = _users.AutoProvisionUser(provider, providerUserId, claims.ToList());
+        }
+
+        if (accessToken != null)
+        {
+            user.Claims.Add(new Claim("externalAccessToken", accessToken));
         }
 
         // this allows us to collect any additional claims or properties

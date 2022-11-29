@@ -1,118 +1,135 @@
 [
-    {
-      "SubjectId": "1",
-      "Username": "alice",
-      "Password": "alice",
-      "IsActive": true,
-      "Claims": [
-        {
-          "Type": "name",
-          "Value": "Alice Smith"
-        },
-        {
-          "Type": "given_name",
-          "Value": "Alice"
-        },
-        {
-          "Type": "family_name",
-          "Value": "Smith"
-        },
-        {
-          "Type": "email",
-          "Value": "AliceSmith@email.com"
-        },
-        {
-          "Type": "email_verified",
-          "Value": "true",
-          "ValueType": "http://www.w3.org/2001/XMLSchema#boolean"
-        },
-        {
-          "Type": "website",
-          "Value": "http://alice.com"
-        },
-        {
-          "Type": "address",
-          "Value": "{\"street_address\":\"One Hacker Way\",\"locality\":\"Heidelberg\",\"postal_code\":69118,\"country\":\"Germany\"}",
-          "ValueType": "json"
-        }
-      ]
-    },
-    {
-      "SubjectId": "2",
-      "Username": "bob",
-      "Password": "bob",
-      "IsActive": true,
-      "Claims": [
-        {
-          "Type": "name",
-          "Value": "Bob Smith"
-        },
-        {
-          "Type": "given_name",
-          "Value": "Bob"
-        },
-        {
-          "Type": "family_name",
-          "Value": "Smith"
-        },
-        {
-          "Type": "email",
-          "Value": "BobSmith@email.com"
-        },
-        {
-          "Type": "email_verified",
-          "Value": "true",
-          "ValueType": "http://www.w3.org/2001/XMLSchema#boolean"
-        },
-        {
-          "Type": "website",
-          "Value": "http://bob.com"
-        },
-        {
-          "Type": "address",
-          "Value": "{\"street_address\":\"One Hacker Way\",\"locality\":\"Heidelberg\",\"postal_code\":69118,\"country\":\"Germany\"}",
-          "ValueType": "json"
-        }
-      ]
-    },
-    {
-      "SubjectId": "3",
-      "Username": "test",
-      "Password": "N/A",
-      "ProviderName": "aad",
-      "ProviderSubjectId": "GUID",
-      "IsActive": true,
-      "Claims": [
-        {
-          "Type": "name",
-          "Value": "Alice Smith"
-        },
-        {
-          "Type": "given_name",
-          "Value": "Alice"
-        },
-        {
-          "Type": "family_name",
-          "Value": "Smith"
-        },
-        {
-          "Type": "email",
-          "Value": "AliceSmith@email.com"
-        },
-        {
-          "Type": "email_verified",
-          "Value": "true",
-          "ValueType": "http://www.w3.org/2001/XMLSchema#boolean"
-        },
-        {
-          "Type": "website",
-          "Value": "http://alice.com"
-        },
-        {
-          "Type": "address",
-          "Value": "{\"street_address\":\"One Hacker Way\",\"locality\":\"Heidelberg\",\"postal_code\":69118,\"country\":\"Germany\"}",
-          "ValueType": "json"
-        }
-      ]
-    }
-  ]
+  {
+    "SubjectId": "1",
+    "Username": "alice",
+    "Password": "alice",
+    "IsActive": true,
+    "Claims": [
+      {
+        "Type": "name",
+        "Value": "Alice Smith"
+      },
+      {
+        "Type": "given_name",
+        "Value": "Alice"
+      },
+      {
+        "Type": "family_name",
+        "Value": "Smith"
+      },
+      {
+        "Type": "email",
+        "Value": "AliceSmith@email.com"
+      },
+      {
+        "Type": "email_verified",
+        "Value": "true",
+        "ValueType": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      {
+        "Type": "website",
+        "Value": "http://alice.com"
+      },
+      {
+        "Type": "address",
+        "Value": "{\"street_address\":\"One Hacker Way\",\"locality\":\"Heidelberg\",\"postal_code\":69118,\"country\":\"Germany\"}",
+        "ValueType": "json"
+      }
+    ]
+  },
+  {
+    "SubjectId": "2",
+    "Username": "bob",
+    "Password": "bob",
+    "IsActive": true,
+    "Claims": [
+      {
+        "Type": "name",
+        "Value": "Bob Smith"
+      },
+      {
+        "Type": "given_name",
+        "Value": "Bob"
+      },
+      {
+        "Type": "family_name",
+        "Value": "Smith"
+      },
+      {
+        "Type": "email",
+        "Value": "BobSmith@email.com"
+      },
+      {
+        "Type": "email_verified",
+        "Value": "true",
+        "ValueType": "http://www.w3.org/2001/XMLSchema#boolean"
+      },
+      {
+        "Type": "website",
+        "Value": "http://bob.com"
+      },
+      {
+        "Type": "address",
+        "Value": "{\"street_address\":\"One Hacker Way\",\"locality\":\"Heidelberg\",\"postal_code\":69118,\"country\":\"Germany\"}",
+        "ValueType": "json"
+      }
+    ]
+  },
+  {
+    "SubjectId": "3",
+    "Username": "testdeveloper",
+    "Password": "N/A",
+    "ProviderName": "aad",
+    "ProviderSubjectId": "2tUrG3srdVvhMn8kV9MriSEDfxSh9YslPofytLvgm4c",
+    "IsActive": true,
+    "Claims": [
+      {
+        "Type": "name",
+        "Value": "Test Developer"
+      },
+      {
+        "Type": "given_name",
+        "Value": "Test"
+      },
+      {
+        "Type": "family_name",
+        "Value": "Developer"
+      },
+      {
+        "Type": "email",
+        "Value": "bowencode@outlook.com"
+      },
+      {
+        "Type": "email_verified",
+        "Value": "true",
+        "ValueType": "http://www.w3.org/2001/XMLSchema#boolean"
+      }
+    ]
+  },
+  {
+    "SubjectId": "4",
+    "Username": "test@bowencode.com",
+    "Password": "N/A",
+    "ProviderName": "auth0",
+    "ProviderSubjectId": "auth0|637b15809b9c4feffbf6e09a",
+    "IsActive": true,
+    "Claims": [
+      {
+        "Type": "name",
+        "Value": "External Test User"
+      },
+      {
+        "Type": "given_name",
+        "Value": "Test"
+      },
+      {
+        "Type": "family_name",
+        "Value": "User"
+      },
+      {
+        "Type": "email",
+        "Value": "test@bowencode.com"
+      }
+    ]
+  }
+]
