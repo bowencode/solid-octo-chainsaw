@@ -36,46 +36,57 @@
         <ScrollView Grid.Row="1">
             <VerticalStackLayout
                 Spacing="25"
-                Padding="30,0"
-                VerticalOptions="Center">
+                Padding="30,0">
 
-                <Label
-                    Text="My Notes"
-                    SemanticProperties.HeadingLevel="Level1"
-                    FontSize="32"
-                    HorizontalOptions="Center" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Label
+                        Text="My Notes"
+                        SemanticProperties.HeadingLevel="Level1"
+                        FontSize="32"
+                        HorizontalOptions="Center" />
 
-                <ListView ItemsSource="{Binding NotesList}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <HorizontalStackLayout>
-                                    <Label Text="{Binding Updated}" VerticalOptions="Center" Margin="10,0"/>
-                                    <Editor Text="{Binding Text}"/>
-                                </HorizontalStackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                    <ListView ItemsSource="{Binding NotesList}" Grid.Row="1">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <HorizontalStackLayout>
+                                        <Label Text="{Binding Updated}" VerticalOptions="Center" Margin="10,0"/>
+                                        <Editor Text="{Binding Text}"/>
+                                    </HorizontalStackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
-                <Label
-                    Text="My Events"
-                    SemanticProperties.HeadingLevel="Level1"
-                    FontSize="32"
-                    HorizontalOptions="Center" />
+                    <Label
+                        Text="My Events"
+                        SemanticProperties.HeadingLevel="Level1"
+                        FontSize="32"
+                        HorizontalOptions="Center"
+                        Grid.Column="1"/>
 
-                <ListView ItemsSource="{Binding CalendarList}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <HorizontalStackLayout>
-                                    <Label Text="{Binding Date, StringFormat='{0:d}'}" Margin="10,0" VerticalOptions="Center"/>
-                                    <Editor TextColor="Blue" Text="{Binding Description}"/>
-                                </HorizontalStackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                    <ListView ItemsSource="{Binding CalendarList}"
+                              Grid.Row="1" Grid.Column="1">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <HorizontalStackLayout>
+                                        <Label Text="{Binding Date, StringFormat='{0:d}'}" Margin="10,0" VerticalOptions="Center"/>
+                                        <Editor TextColor="Blue" Text="{Binding Description}"/>
+                                    </HorizontalStackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
 
                 <Editor x:Name="Editor"
                     HeightRequest="350"
