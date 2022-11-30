@@ -1,10 +1,12 @@
 using Demo.Notes.Web.AdminApi.Host.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Notes.Web.AdminApi.Host.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize("ReadUsernames")]
     public class UsernameController : ControllerBase
     {
         private readonly ILogger _logger;

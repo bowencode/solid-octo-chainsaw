@@ -1,6 +1,8 @@
 using Demo.Notes.Common.Configuration;
+using Demo.Notes.Common.Extensions;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 
@@ -29,6 +31,23 @@ namespace Demo.Notes.Web.UserApi.Host
                         RequireAudience = true,
                     };
                 });
+
+            builder.Services.AddSingleton<IAuthorizationHandler, ScopeAuthorizationHandler>();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ReadNotes", policy =>
+                {
+                    policy.AddRequirements(new ScopeRequirement("read:notes"));
+                });
+                options.AddPolicy("WriteNotes", policy =>
+                {
+                    policy.AddRequirements(new ScopeRequirement("write:notes"));
+                });
+                options.AddPolicy("ListNotes", policy =>
+                {
+                    policy.AddRequirements(new ScopeRequirement("list:notes"));
+                });
+            });
 
             builder.Services.Configure<CosmosOptions>(builder.Configuration.GetSection("Cosmos"));
 

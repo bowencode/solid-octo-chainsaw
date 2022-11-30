@@ -1,10 +1,12 @@
 using Demo.Notes.Common.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.Partner.ExternalApi.Host.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize("ReadCalendar")]
     public class CalendarController : ControllerBase
     {
         private static readonly string[] EventTypes = new[]

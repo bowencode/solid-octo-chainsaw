@@ -1,6 +1,7 @@
 using Demo.Notes.Common.Configuration;
 using Demo.Notes.Common.Model;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
@@ -8,6 +9,7 @@ using System.Text.Json.Serialization;
 
 namespace Demo.Notes.Web.Host.Pages
 {
+    [Authorize("Admin")]
     public class UserListModel : PageModel
     {
         private readonly AdminApiOptions _options;

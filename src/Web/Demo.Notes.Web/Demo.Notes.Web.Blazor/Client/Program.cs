@@ -16,13 +16,15 @@ namespace Demo.Notes.Web.Blazor.Client
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, BffAuthenticationStateProvider>();
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
             // HTTP client configuration
             builder.Services.AddTransient<AntiforgeryHandler>();
 
-            builder.Services.AddHttpClient("backend", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-                .AddHttpMessageHandler<AntiforgeryHandler>();
+            builder.Services.AddHttpClient("backend", client =>
+            {
+                client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+            }).AddHttpMessageHandler<AntiforgeryHandler>();
             builder.Services.AddTransient(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("backend"));
 
             await builder.Build().RunAsync();

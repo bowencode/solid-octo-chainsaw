@@ -18,11 +18,8 @@ public static class Config
     public static IEnumerable<ApiScope> ApiScopes =>
         new ApiScope[]
         {
-            new ApiScope("scope1"),
-            new ApiScope("scope2"),
-            new ApiScope("myApi"),
-            new ApiScope("read:users"),
             new ApiScope("read:user-details"),
+            new ApiScope("read:username"),
             new ApiScope("read:notes"),
             new ApiScope("write:notes"),
             new ApiScope("list:notes"),
@@ -31,22 +28,23 @@ public static class Config
     public static IEnumerable<Client> Clients =>
         new Client[]
         {
-            // m2m client credentials flow client
+            // m2m client credentials client for User to Admin API calls
             new Client
             {
-                ClientId = "m2m.client",
-                ClientName = "Client Credentials Client",
+                ClientId = "m2m.api",
+                ClientName = "Web API Client Credentials Client",
 
                 AllowedGrantTypes = GrantTypes.ClientCredentials,
                 ClientSecrets = { new Secret("511536EF-F270-4058-80CA-1C89C192F69A".Sha256()) },
 
-                AllowedScopes = { "scope1" }
+                AllowedScopes = { "read:username" }
             },
-            
+
+            // m2m client credentials client for server-side application to Admin API calls
             new Client
             {
                 ClientId = "m2m.web-admin",
-                ClientName = "Web App Admin Client Credentials Client",
+                ClientName = "Web App Client Credentials Client",
 
                 AllowedGrantTypes = GrantTypes.ClientCredentials,
                 ClientSecrets = { new Secret("7954d1dd-49c0-4b9e-acd9-780c78a5570e".Sha256()) },
@@ -54,25 +52,16 @@ public static class Config
                 AllowedScopes = { "read:users" }
             },
 
-            // interactive client using code flow + pkce
+            // m2m client credentials client for web client admin BFF to User API calls
             new Client
             {
-                ClientId = "interactive",
-                ClientSecrets = { new Secret("49C1A7E1-0C79-4A89-A3D6-A37998FB86B0".Sha256()) },
-                    
-                AllowedGrantTypes = GrantTypes.Code,
+                ClientId = "m2m.web-admin-app",
+                ClientName = "Web Client Admin App Client Credentials Client",
 
-                RedirectUris = { "https://localhost:44300/signin-oidc" },
-                FrontChannelLogoutUri = "https://localhost:44300/signout-oidc",
-                PostLogoutRedirectUris = { "https://localhost:44300/signout-callback-oidc" },
+                AllowedGrantTypes = GrantTypes.ClientCredentials,
+                ClientSecrets = { new Secret("2e7a8484-8fdc-4458-9222-95f3b369421c".Sha256()) },
 
-                AllowOfflineAccess = true,
-                AllowedScopes =
-                {
-                    IdentityServerConstants.StandardScopes.OpenId,
-                    IdentityServerConstants.StandardScopes.Profile,
-                    "scope2"
-                }
+                AllowedScopes = { "list:notes" }
             },
 
             // interactive client for server-side application
@@ -96,12 +85,13 @@ public static class Config
                     "https://localhost:7163/signout-callback-oidc",
                     "http://localhost:5163/signout-callback-oidc",
                 },
-
+                
                 AllowedScopes = new List<string>
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Email,
+                    "read:notes",
                 }
             },
 
@@ -136,7 +126,6 @@ public static class Config
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Email,
                     IdentityServerConstants.StandardScopes.OfflineAccess,
-                    "myApi",
                 }
             },
 
@@ -203,6 +192,7 @@ public static class Config
 
                 AllowedGrantTypes = GrantTypes.Code,
                 AllowOfflineAccess = true,
+                IdentityProviderRestrictions = { "auth0" },
 
                 // where to redirect to after login
                 RedirectUris =

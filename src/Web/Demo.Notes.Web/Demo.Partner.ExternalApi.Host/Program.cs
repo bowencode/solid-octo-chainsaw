@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 namespace Demo.Partner.ExternalApi.Host
 {
     public class Program
@@ -14,19 +16,23 @@ namespace Demo.Partner.ExternalApi.Host
             builder.Services.AddSwaggerGen();
 
             var section = builder.Configuration.GetSection("Auth");
-            builder.Services.AddAuthentication()
-                .AddJwtBearer(options =>
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
                 {
                     var authority = section.GetValue<string>("Authority");
+                    var audience = section.GetValue<string>("Audience");
                     options.Authority = authority;
+                    options.Audience = audience;
                 });
             builder.Services.AddAuthorization(options =>
             {
                 var scope = section.GetValue<string>("RequiredScope");
-                options.AddPolicy("default", policy =>
+                options.AddPolicy("ReadCalendar", policy =>
                 {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim("scope", scope);
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.HasClaim(c => c.Type == "scope" && c.Value.Split(' ').Contains(scope));
+                    });
                 });
             });
 

@@ -2,6 +2,7 @@ using Demo.Notes.Common.Configuration;
 using Microsoft.AspNetCore.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http.Headers;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Demo.Notes.Web.Host;
 
@@ -79,5 +80,17 @@ public class Program
 
                 options.SaveTokens = true;
             });
+
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("User", policy =>
+            {
+                policy.RequireClaim("idp", "local", "auth0");
+            });
+            options.AddPolicy("Admin", policy =>
+            {
+                policy.RequireClaim("idp", "aad");
+            });
+        });
     }
 }

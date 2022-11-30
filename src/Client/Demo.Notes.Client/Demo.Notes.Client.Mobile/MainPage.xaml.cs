@@ -36,7 +36,7 @@ namespace Demo.Notes.Client.Mobile
 
             if (result.IsError)
             {
-                Editor.Text = result.Error;
+                ErrorMessage.Text = result.Error;
                 return;
             }
 
@@ -60,7 +60,7 @@ namespace Demo.Notes.Client.Mobile
                 }
                 else
                 {
-                    Editor.Text = response.ReasonPhrase;
+                    ErrorMessage.Text = response.ReasonPhrase;
                 }
             }
 
@@ -82,7 +82,7 @@ namespace Demo.Notes.Client.Mobile
                 }
                 else
                 {
-                    Editor.Text = response.ReasonPhrase;
+                    ErrorMessage.Text = response.ReasonPhrase;
                 }
             }
         }

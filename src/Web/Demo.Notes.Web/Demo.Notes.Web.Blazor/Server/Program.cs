@@ -2,6 +2,7 @@ using System.Net.Http.Headers;
 using Demo.Notes.Common.Configuration;
 using IdentityModel.AspNetCore.AccessTokenManagement;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Options;
@@ -62,7 +63,21 @@ namespace Demo.Notes.Web.Blazor
         {
             var identityOptions = builder.Configuration.GetSection("Identity").Get<IdentityServerOptions>();
 
-            builder.Services.AddBff();
+            var apiOptions = builder.Configuration.GetSection("ApiOptions").Get<IdentityServerOptions>();
+
+            builder.Services.AddBff(opt =>
+            {
+                opt.AccessTokenManagementConfigureAction = (options) =>
+                {
+                    options.Client.Clients.Add("proxy", new ClientCredentialsTokenRequest
+                    {
+                        Address = $"{apiOptions.Authority.TrimEnd('/')}/connect/token",
+                        ClientId = apiOptions.ClientId,
+                        ClientSecret = apiOptions.ClientSecret,
+                        Scope = apiOptions.GetScope(),
+                    });
+                };
+            });
 
             builder.Services.AddAuthentication(options =>
                 {
@@ -85,11 +100,10 @@ namespace Demo.Notes.Web.Blazor
                     options.ResponseMode = "query";
 
                     options.Scope.Clear();
-                    options.Scope.Add("openid");
-                    options.Scope.Add("profile");
-                    //options.Scope.Add("api");
-                    options.Scope.Add("myApi");
-                    options.Scope.Add("offline_access");
+                    foreach (var scope in identityOptions.Scopes)
+                    {
+                        options.Scope.Add(scope);
+                    }
 
                     options.MapInboundClaims = false;
                     options.GetClaimsFromUserInfoEndpoint = true;
@@ -99,19 +113,6 @@ namespace Demo.Notes.Web.Blazor
 
         private static void AddConfiguredReverseProxy(WebApplicationBuilder builder)
         {
-            var identityOptions = builder.Configuration.GetSection("Identity").Get<IdentityServerOptions>();
-
-            builder.Services.Configure<ClientAccessTokenManagementOptions>(options =>
-            {
-                options.Clients.Add("proxy", new ClientCredentialsTokenRequest
-                {
-                    Address = $"{identityOptions.Authority.TrimEnd('/')}/connect/token",
-                    ClientId = identityOptions.ClientId,
-                    ClientSecret = identityOptions.ClientSecret,
-                    Scope = identityOptions.GetScope(),
-                });
-            });
-
             var proxyBuilder = builder.Services.AddReverseProxy()
                 .AddTransforms(builderContext =>
                 {
@@ -131,7 +132,9 @@ namespace Demo.Notes.Web.Blazor
                         // Conditionally add a transform for routes that require auth.
                         builderContext.AddRequestTransform(async transformContext =>
                         {
-                            // includes user token in request
+                            // include user token in request
+                            var token = await transformContext.HttpContext.GetUserAccessTokenAsync();
+                            transformContext.ProxyRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
                         });
                     }
                 });

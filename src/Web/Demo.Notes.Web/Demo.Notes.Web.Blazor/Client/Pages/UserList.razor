@@ -7,6 +7,14 @@
 <ul>
     @foreach (var userSummary in Users)
     {
-        <li>@($"{userSummary.Id} - {userSummary.Username}")</li>
+        <li>
+            @($"{userSummary.Id} - {userSummary.Username}")
+            <ul>
+                @foreach (var note in userSummary.Notes)
+                {
+                    <li>@note.Text</li>
+                }
+            </ul>
+        </li>
     }
 </ul>

@@ -16,23 +16,3 @@
         <a asp-page="/NoteDetail" asp-route-id="@note.Id">@note.Text.Substring(0, Math.Min(note.Text.Length, 20)) - @note.Updated.ToString("g")</a>
     </div>
 }
-
-<h2>Claims</h2>
-
-<dl>
-    @foreach (var claim in User.Claims)
-    {
-        <dt>@claim.Type</dt>
-        <dd>@claim.Value</dd>
-    }
-</dl>
-
-<h2>Properties</h2>
-
-<dl>
-    @foreach (var prop in (await HttpContext.AuthenticateAsync()).Properties?.Items ?? new Dictionary<string, string?>())
-    {
-        <dt>@prop.Key</dt>
-        <dd>@prop.Value</dd>
-    }
-</dl>

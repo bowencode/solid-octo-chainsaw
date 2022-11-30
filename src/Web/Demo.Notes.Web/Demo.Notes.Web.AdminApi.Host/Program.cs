@@ -1,3 +1,8 @@
+using Demo.Notes.Common.Extensions;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+
 namespace Demo.Notes.Web.AdminApi.Host
 {
     public class Program
@@ -7,6 +12,39 @@ namespace Demo.Notes.Web.AdminApi.Host
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, opt =>
+                {
+                    opt.Authority = "https://localhost:5001";
+                    opt.Audience = "https://localhost:5001/resources";
+                    opt.MapInboundClaims = false;
+                    opt.RequireHttpsMetadata = true;
+                    opt.SaveToken = true;
+                    opt.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        RequireAudience = true,
+                    };
+                });
+
+            builder.Services.AddSingleton<IAuthorizationHandler, ScopeAuthorizationHandler>();
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ReadUsernames", policy =>
+                {
+                    policy.AddRequirements(new ScopeRequirement("read:username"));
+                });
+                options.AddPolicy("ReadUsers", policy =>
+                {
+                    policy.RequireClaim("idp", "aad");
+                });
+                options.AddPolicy("ReadUserDetails", policy =>
+                {
+                    policy.RequireClaim("idp", "aad");
+                    policy.AddRequirements(new ScopeRequirement("read:user-details"));
+                });
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -24,6 +62,7 @@ namespace Demo.Notes.Web.AdminApi.Host
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

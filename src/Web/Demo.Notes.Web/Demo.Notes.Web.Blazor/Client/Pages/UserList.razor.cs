@@ -12,14 +12,24 @@ namespace Demo.Notes.Web.Blazor.Client.Pages
         {
             var response = await Http.GetAsync("api/admin/UserNames");
             
-            var users = await response.Content.ReadFromJsonAsync<List<UserSummary>>();
+            var users = await response.Content.ReadFromJsonAsync<List<UserNotesSummary>>();
             if (users != null)
             {
                 Users = users;
+
+                foreach (var userSummary in Users)
+                {
+                    var noteResponse = await Http.GetAsync($"user/api/notes/{userSummary.Id}");
+                    var notes = await noteResponse.Content.ReadFromJsonAsync<List<NoteData>>();
+                    if (notes != null)
+                    {
+                        userSummary.Notes = notes;
+                    }
+                }
             }
         }
 
-        public List<UserSummary> Users { get; set; } = new List<UserSummary>();
+        public List<UserNotesSummary> Users { get; set; } = new List<UserNotesSummary>();
 
         [Inject]
         public HttpClient Http { get; set; } = null!;

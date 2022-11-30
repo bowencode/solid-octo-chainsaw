@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
 using Demo.Notes.Common.Extensions;
-using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Demo.Notes.Web.UserApi.Host.Controllers
 {
     [ApiController]
+    [Authorize("ReadNotes")]
     public class NoteController : ControllerBase
     {
         private readonly ILogger<NoteController> _logger;
@@ -68,6 +69,7 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         }
 
         [HttpPost("api/note/")]
+        [Authorize("WriteNotes")]
         public async Task<IActionResult> Post(NoteData note)
         {
             if (string.IsNullOrWhiteSpace(note.UserId))
@@ -93,6 +95,7 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         }
 
         [HttpPut("api/note/{id}")]
+        [Authorize("WriteNotes")]
         public async Task<IActionResult> Put(string id, NoteData note)
         {
             if (string.IsNullOrWhiteSpace(note.UserId) || id != note.Id || note.UserId != CurrentUserId)
@@ -113,6 +116,7 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         }
 
         [HttpDelete("api/note/{id}")]
+        [Authorize("WriteNotes")]
         public async Task<IActionResult> Delete(string id)
         {
             var container = await GetNotesContainerAsync();

@@ -2,11 +2,13 @@ using Demo.Notes.Common.Extensions;
 using Demo.Notes.Web.AdminApi.Host.Model;
 using Microsoft.AspNetCore.Mvc;
 using Demo.Notes.Common.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Demo.Notes.Web.AdminApi.Host.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize("ReadUserDetails")]
     public class UsersController : ControllerBase
     {
         private readonly ILogger _logger;
