@@ -15,7 +15,7 @@ function getUser() {
 
 function App() {
   const auth = useAuth();
-  
+
   switch (auth.activeNavigator) {
     case "signinSilent":
       return <div>Signing you in...</div>;
@@ -37,21 +37,29 @@ function App() {
 
     return (
       <div className="App">
-        Hello {auth.user?.profile.name}{" "}
-        <button onClick={() => void auth.removeUser()}>Log out</button>
-        <div>
-          Your access token is:
+        <header className="App-header">
+          Hello {auth.user?.profile.name}{" "}
+          <button onClick={() => void auth.removeUser()}>Log out</button>
           <div>
-            <textarea className="token-display" defaultValue={token}/>
+            Your access token is:
+            <div>
+              <textarea className="token-display" defaultValue={token} />
+            </div>
           </div>
-        </div>
 
-        <Notes/>
+          <Notes />
+        </header>
       </div>
     );
   }
 
-  return <button onClick={() => void auth.signinRedirect()}>Log in</button>;
+  return (
+    <div className="App">
+      <header className="App-header">
+        <button onClick={() => void auth.signinRedirect()}>Log in</button>
+      </header>
+    </div>
+  );
 }
 
 export default App;

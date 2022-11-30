@@ -29,7 +29,7 @@ const Notes = () => {
     return (
         <dl>
         {notes.map((note, index) => {
-            return <><dd key={index}>{Moment(note.updated).format("MM/DD/yyyy HH:mm:ss")}</dd><dt>{note.text}</dt></>;
+            return <><dt key={index}>{Moment(note.updated).format("MM/DD/yyyy")}</dt><dd>{note.text}</dd></>;
         })}
         </dl>
     );

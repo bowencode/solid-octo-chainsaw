@@ -174,6 +174,8 @@ public static class Config
                 AllowedCorsOrigins =     { "https://localhost:3000" },
 
                 AlwaysIncludeUserClaimsInIdToken = true,
+                
+                IdentityProviderRestrictions = { "none" },
 
                 AllowedScopes =
                 {
