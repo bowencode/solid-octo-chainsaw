@@ -93,7 +93,7 @@ namespace Demo.Notes.Web.UserApi.Host
 
             services.AddAccessTokenManagement(options =>
             {
-                options.Client.Clients.Add("client", new ClientCredentialsTokenRequest
+                options.Client.Clients.Add("tokenService", new ClientCredentialsTokenRequest
                 {
                     Address = $"{apiOptions.Identity.Authority.TrimEnd('/')}/connect/token",
                     ClientId = apiOptions.Identity.ClientId,
@@ -102,7 +102,7 @@ namespace Demo.Notes.Web.UserApi.Host
                 });
             });
 
-            services.AddClientAccessTokenHttpClient("adminApiClient", configureClient: client =>
+            services.AddClientAccessTokenHttpClient("adminApiClient", "tokenService", configureClient: client =>
             {
                 client.BaseAddress = new Uri(apiOptions.Host);
             });

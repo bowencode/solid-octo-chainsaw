@@ -2,6 +2,7 @@ using Demo.Notes.Common.Configuration;
 using Demo.Notes.Common.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;
 
@@ -19,14 +20,12 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         {
             _logger = logger;
             _options = options.Value;
-
-            GetClient();
         }
 
         [HttpGet("api/notes/")]
         public async Task<IActionResult> Get()
         {
-            var container = await GetNotesContainerAsync();
+            var container = await NotesDatabase.GetNotesContainerAsync(_options);
 
             var allNotes = container
                 .GetItemLinqQueryable<NoteData>(allowSynchronousQueryExecution: true)
@@ -38,7 +37,7 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         [HttpGet("api/notes/{userId}/")]
         public async Task<IActionResult> GetByUser(string userId)
         {
-            var container = await GetNotesContainerAsync();
+            var container = await NotesDatabase.GetNotesContainerAsync(_options);
 
             var allNotes = container.GetItemLinqQueryable<NoteData>(
                     allowSynchronousQueryExecution: true,
@@ -46,24 +45,6 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
                 .Where(n => n.UserId == userId)
                 .ToList();
             return Ok(allNotes);
-        }
-
-        private CosmosClient GetClient()
-        {
-            CosmosClient cosmosClient = new CosmosClient(_options.ConnectionString);
-            return cosmosClient;
-        }
-
-        private async Task<Container> GetNotesContainerAsync()
-        {
-            var client = GetClient();
-            Database db = await client.CreateDatabaseIfNotExistsAsync(_options.Database);
-            Container container = await db.CreateContainerIfNotExistsAsync(new ContainerProperties
-            {
-                Id = _options.NotesContainer,
-                PartitionKeyPath = "/id",
-            }, ThroughputProperties.CreateAutoscaleThroughput(4000));
-            return container;
         }
     }
 }

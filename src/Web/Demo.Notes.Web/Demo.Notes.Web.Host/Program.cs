@@ -76,6 +76,8 @@ public class Program
 
                 options.Scope.Add("profile");
                 options.Scope.Add("email");
+                options.Scope.Add("read:notes");
+                options.Scope.Add("write:notes");
                 options.GetClaimsFromUserInfoEndpoint = true;
 
                 options.SaveTokens = true;

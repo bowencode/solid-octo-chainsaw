@@ -20,6 +20,7 @@ public static class Config
         {
             new ApiScope("read:user-details"),
             new ApiScope("read:username"),
+            new ApiScope("read:users"),
             new ApiScope("read:notes"),
             new ApiScope("write:notes"),
             new ApiScope("list:notes"),
@@ -92,6 +93,7 @@ public static class Config
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Email,
                     "read:notes",
+                    "write:notes",
                 }
             },
 
@@ -159,6 +161,7 @@ public static class Config
                     IdentityServerConstants.StandardScopes.Email,
                     IdentityServerConstants.StandardScopes.OfflineAccess,
                     "read:user-details",
+                    "list:notes",
                 }
             },
 

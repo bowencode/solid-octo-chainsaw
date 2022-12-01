@@ -29,7 +29,7 @@ namespace Demo.Notes.Client.Desktop
                 Authority = "https://localhost:5001",
                 ClientId = "desktop-admin-ui",
                 ClientSecret = ClientSecret,
-                Scope = "openid profile email offline_access read:user-details",
+                Scope = "openid profile email offline_access read:user-details list:notes",
                 RedirectUri = "http://127.0.0.1/wpf-notes-admin-app",
                 Browser = new WpfEmbeddedBrowser(),
                 Policy = new Policy

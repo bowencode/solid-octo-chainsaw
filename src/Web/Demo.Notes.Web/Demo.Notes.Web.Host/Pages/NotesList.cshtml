@@ -16,3 +16,7 @@
         <a asp-page="/NoteDetail" asp-route-id="@note.Id">@note.Text.Substring(0, Math.Min(note.Text.Length, 20)) - @note.Updated.ToString("g")</a>
     </div>
 }
+
+<hr/>
+
+<a asp-page="/AddNote">Add New Note</a>

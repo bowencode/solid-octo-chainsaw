@@ -37,7 +37,16 @@ namespace Demo.Notes.Web.AdminApi.Host
                 });
                 options.AddPolicy("ReadUsers", policy =>
                 {
-                    policy.RequireClaim("idp", "aad");
+                    policy.RequireAssertion(context =>
+                    {
+                        if (context.User.HasClaim("idp", "aad"))
+                            return true;
+                        
+                        if (context.User.HasClaim(c => c.Type == "scope" && c.Value.Split(' ').Contains("read:users")))
+                            return true;
+
+                        return false;
+                    });
                 });
                 options.AddPolicy("ReadUserDetails", policy =>
                 {

@@ -28,6 +28,7 @@ namespace Demo.Notes.Client.Mobile
             CurrentUser = null;
             AccessToken = null;
             NotesList.Clear();
+            CalendarList.Clear();
         }
 
         private async void OnLoginClicked(object sender, EventArgs e)

@@ -18,29 +18,25 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         private readonly CosmosOptions _dbOptions;
 
         private string? CurrentUserId => User.GetUserId();
-        private static CosmosLinqSerializerOptions SerializerOptions => new CosmosLinqSerializerOptions { PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase };
 
         public NoteController(ILogger<NoteController> logger, IHttpClientFactory httpClientFactory, IOptions<CosmosOptions> dbOptions)
         {
             _logger = logger;
             _httpClient = httpClientFactory.CreateClient("adminApiClient");
             _dbOptions = dbOptions.Value;
-
-            GetClient();
         }
 
         [EnableCors("ClientSideSPA")]
         [HttpGet("api/note/")]
         public async Task<IActionResult> Get()
         {
-            var container = await GetNotesContainerAsync();
+            var container = await NotesDatabase.GetNotesContainerAsync(_dbOptions);
 
             if (CurrentUserId == null)
                 return BadRequest();
 
             var allNotes = container.GetItemLinqQueryable<NoteData>(
-                    allowSynchronousQueryExecution: true, 
-                    linqSerializerOptions: SerializerOptions)
+                    allowSynchronousQueryExecution: true)
                 .Where(n => n.UserId == CurrentUserId)
                 .ToList();
 
@@ -50,12 +46,11 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         [HttpGet("api/note/{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            var container = await GetNotesContainerAsync();
+            var container = await NotesDatabase.GetNotesContainerAsync(_dbOptions);
             var note = container
                 .GetItemLinqQueryable<NoteData>(
                     allowSynchronousQueryExecution: true,
-                    requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(id) },
-                    linqSerializerOptions: SerializerOptions)
+                    requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(id) })
                 .Where(n => n.UserId == CurrentUserId && n.Id == id)
                 .AsEnumerable()
                 .FirstOrDefault();
@@ -77,14 +72,14 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
                 return BadRequest();
             }
 
-            string username = await _httpClient.GetStringAsync($"username/{CurrentUserId}");
+            string username = await _httpClient.GetStringAsync($"Username/?id={CurrentUserId}");
 
             note.Id = Guid.NewGuid().ToString();
             note.UserId = CurrentUserId;
             note.Username = username;
             note.Updated = DateTime.UtcNow;
 
-            var container = await GetNotesContainerAsync();
+            var container = await NotesDatabase.GetNotesContainerAsync(_dbOptions);
             NoteData created = await container.CreateItemAsync(note);
             if (created == null)
             {
@@ -105,7 +100,7 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
 
             note.Updated = DateTime.UtcNow;
 
-            var container = await GetNotesContainerAsync();
+            var container = await NotesDatabase.GetNotesContainerAsync(_dbOptions);
             NoteData updated = await container.UpsertItemAsync(note);
             if (updated == null)
             {
@@ -119,12 +114,11 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
         [Authorize("WriteNotes")]
         public async Task<IActionResult> Delete(string id)
         {
-            var container = await GetNotesContainerAsync();
+            var container = await NotesDatabase.GetNotesContainerAsync(_dbOptions);
             var note = container
                 .GetItemLinqQueryable<NoteData>(
                     allowSynchronousQueryExecution: true,
-                    requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(id) }, 
-                    linqSerializerOptions: SerializerOptions)
+                    requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(id) })
                 .Where(n => n.UserId == CurrentUserId && n.Id == id)
                 .AsEnumerable()
                 .FirstOrDefault();
@@ -143,22 +137,5 @@ namespace Demo.Notes.Web.UserApi.Host.Controllers
             return NotFound();
         }
 
-        private CosmosClient GetClient()
-        {
-            CosmosClient cosmosClient = new CosmosClient(_dbOptions.ConnectionString);
-            return cosmosClient;
-        }
-
-        private async Task<Container> GetNotesContainerAsync()
-        {
-            var client = GetClient();
-            Database db = await client.CreateDatabaseIfNotExistsAsync(_dbOptions.Database);
-            Container container = await db.CreateContainerIfNotExistsAsync(new ContainerProperties
-            {
-                Id = _dbOptions.NotesContainer,
-                PartitionKeyPath = "/id",
-            }, ThroughputProperties.CreateAutoscaleThroughput(4000));
-            return container;
-        }
     }
 }

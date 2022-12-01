@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Demo.Notes.Client.Desktop"
         xmlns:common="clr-namespace:Demo.Notes.Common.Model;assembly=Demo.Notes.Common"
         mc:Ignorable="d"
-        Title="Notes Admin" Height="450" Width="800"
+        Title="Notes Admin" Height="600" Width="900"
         x:Name="WindowRoot"
         Loaded="WindowRoot_Loaded">
     <Window.Resources>
@@ -39,7 +39,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                    <TextBlock TextWrapping="Wrap" Text="{Binding Tokens.AccessToken}" Margin="5"/>
+                    <TextBox TextWrapping="Wrap" Text="{Binding Tokens.AccessToken}" Margin="5"/>
                     <TextBlock TextWrapping="Wrap" Margin="5">
                         <Run Text="Expires:"/>
                         <Run Text="{Binding Tokens.AccessTokenExpiration, Mode=OneWay, StringFormat=O}"/>
@@ -51,7 +51,7 @@
         <Grid TextBlock.FontSize="18" DockPanel.Dock="Top" Margin="10,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" MaxWidth="200" SharedSizeGroup="id"/>
-                <ColumnDefinition Width="Auto" MaxWidth="200" SharedSizeGroup="username"/>
+                <ColumnDefinition Width="Auto" MaxWidth="350" SharedSizeGroup="username"/>
                 <ColumnDefinition Width="Auto" MaxWidth="300" SharedSizeGroup="name"/>
                 <ColumnDefinition Width="*" SharedSizeGroup="email"/>
                 <ColumnDefinition Width="Auto" MaxWidth="100" SharedSizeGroup="active"/>
@@ -75,7 +75,7 @@
                             <Grid TextBlock.FontSize="18">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" MaxWidth="200" SharedSizeGroup="id"/>
-                                    <ColumnDefinition Width="Auto" MaxWidth="200" SharedSizeGroup="username"/>
+                                    <ColumnDefinition Width="Auto" MaxWidth="350" SharedSizeGroup="username"/>
                                     <ColumnDefinition Width="Auto" MaxWidth="300" SharedSizeGroup="name"/>
                                     <ColumnDefinition Width="*" SharedSizeGroup="email"/>
                                     <ColumnDefinition Width="Auto" MaxWidth="100" SharedSizeGroup="active"/>
